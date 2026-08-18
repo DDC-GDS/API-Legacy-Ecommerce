@@ -256,228 +256,248 @@ namespace SAXServices.DAL
 
                 }
             }
-            element.Order_id = Int32.Parse(mensaje);   
+            if (result) 
+                element.Order_id = Int32.Parse(mensaje);
+            else 
+                element.Order_id = 0; 
             return result;
         }
 
         private bool SaveOrder(ConnectionStringSettings connection, OrderB order, out String mensaje)
         {
-            mensaje = "0";
-            if (OpenDBConnection(connection.ConnectionString))
+            try
             {
-                string sSql;
-                
-                //Paso 1: Traigo el proximo numero de pedido
-                var sNumero_Orden = "1";
-
-                //02/03/2020 ITO:ECM-36 Numero de los Pedidos web.
-                //               var sSql =
-                //                  "SELECT IsNull(MAX(Numero_Orden), 0) + 1 Proximo_Numero " +
-                //                  "FROM Orden_De_Compra_Cliente";
-                sSql = "SELECT IsNull(MAX(Num), 0) + 1 as Proximo_Numero FROM(SELECT(numero_orden) AS Num FROM orden_de_compra_cliente UNION SELECT(numero_orden) AS Num FROM orden_de_compra_cliente_h) u";
-
-                using (var sqlCommand = new SqlCommand(sSql, oConexion))
+                mensaje = "0";
+                if (OpenDBConnection(connection.ConnectionString))
                 {
-                    var rsp = sqlCommand.ExecuteReader();
+                    string sSql;
 
-                    if (rsp.Read())
-                    {
-                        sNumero_Orden = rsp["Proximo_Numero"].ToString();
-                    }
+                    //Paso 1: Traigo el proximo numero de pedido
+                    var sNumero_Orden = "1";
 
-                    if (rsp != null)
+                    //02/03/2020 ITO:ECM-36 Numero de los Pedidos web.
+                    //               var sSql =
+                    //                  "SELECT IsNull(MAX(Numero_Orden), 0) + 1 Proximo_Numero " +
+                    //                  "FROM Orden_De_Compra_Cliente";
+                    sSql = "SELECT IsNull(MAX(Num), 0) + 1 as Proximo_Numero FROM(SELECT(numero_orden) AS Num FROM orden_de_compra_cliente UNION SELECT(numero_orden) AS Num FROM orden_de_compra_cliente_h) u";
+
+                    using (var sqlCommand = new SqlCommand(sSql, oConexion))
                     {
-                        if (!rsp.IsClosed)
+                        var rsp = sqlCommand.ExecuteReader();
+
+                        if (rsp.Read())
                         {
-                            rsp.Close();
+                            sNumero_Orden = rsp["Proximo_Numero"].ToString();
+                        }
+
+                        if (rsp != null)
+                        {
+                            if (!rsp.IsClosed)
+                            {
+                                rsp.Close();
+                            }
                         }
                     }
-                }
 
-                //Paso 1.1: Traigo el depósito y la condición de pago del cliente
-                string tipoDeposito = null;
-                int id_CP = 0;
+                    //Paso 1.1: Traigo el depósito y la condición de pago del cliente
+                    string tipoDeposito = null;
+                    int id_CP = 0;
 
-                if (String.IsNullOrEmpty(order.SucName))
-                {
-                    sSql = "SELECT Tipo_Deposito,ISNULL(ID_Condicion_pago, 0) as ID_CP " +
-                    "FROM [dbo].[Clientes] "+
-                    "WHERE Cliente_ID = "+order.Client_ID;
-                }
-                else
-                {
-                    sSql = "SELECT cs.deposito as Tipo_Deposito, ISNULL(c.ID_Condicion_pago, 0) as ID_CP " +
-                    "FROM Clientes_Sucursal cs "+
-                    "INNER JOIN [dbo].[Clientes] c ON cs.Cliente_ID = c.Cliente_ID "+
-                    "WHERE cs.Cliente_ID = " +order.Client_ID + " AND cs.Sucursal = "+order.SucName;
-                }
-
-                using (var sqlCommand = new SqlCommand(sSql, oConexion))
-                {
-                    var rsp = sqlCommand.ExecuteReader();
-
-                    if (rsp.Read())
+                    if (String.IsNullOrEmpty(order.SucName))
                     {
-                        tipoDeposito = rsp["Tipo_Deposito"].ToString();
-                        id_CP = (int)rsp["ID_CP"];
+                        sSql = "SELECT Tipo_Deposito,ISNULL(ID_Condicion_pago, 0) as ID_CP " +
+                        "FROM [dbo].[Clientes] " +
+                        "WHERE Cliente_ID = " + order.Client_ID;
+                    }
+                    else
+                    {
+                        sSql = "SELECT cs.deposito as Tipo_Deposito, ISNULL(c.ID_Condicion_pago, 0) as ID_CP " +
+                        "FROM Clientes_Sucursal cs " +
+                        "INNER JOIN [dbo].[Clientes] c ON cs.Cliente_ID = c.Cliente_ID " +
+                        "WHERE cs.Cliente_ID = " + order.Client_ID + " AND cs.Sucursal = " + order.SucName;
                     }
 
-                    if (rsp != null)
+                    using (var sqlCommand = new SqlCommand(sSql, oConexion))
                     {
-                        if (!rsp.IsClosed)
+                        var rsp = sqlCommand.ExecuteReader();
+
+                        if (rsp.Read())
                         {
-                            rsp.Close();
+                            tipoDeposito = rsp["Tipo_Deposito"].ToString();
+                            id_CP = (int)rsp["ID_CP"];
+                        }
+
+                        if (rsp != null)
+                        {
+                            if (!rsp.IsClosed)
+                            {
+                                rsp.Close();
+                            }
                         }
                     }
-                }
 
 
-                //Paso 2: Grabo la cabecera del pedido
-                var log = String.Format(CultureInfo.CurrentCulture, "{0}{1}", DateTime.Now.ToString(), order.User_ID);
+                    //Paso 2: Grabo la cabecera del pedido
+                    var log = String.Format(CultureInfo.CurrentCulture, "{0}{1}", DateTime.Now.ToString(), order.User_ID);
 
-                //05/05/2020 ITO:ECM-40 Modificación en el envío de las observaciones de los pedidos.
-                var str20200506075501 = "";
-                var strUserActionTmp = order.UserAction.Trim().Substring(0, 1);
-                if (order.UserAction.Trim().Length > 1)
-                {
-                    str20200506075501 = order.UserAction.Trim().Substring(1);
-                    strUserActionTmp = strUserActionTmp.Substring(0, 1);
-                }
-                //26/09/2022
-                var strPedidoObservacion = "";
-                switch (strUserActionTmp.Trim())
-                {
-                    case "A":
-                        strPedidoObservacion = "Anula pedido anterior" + str20200506075501;
-                        break;
-                    case "G":
-                        strPedidoObservacion = "Agrega al pedido anterior" + str20200506075501;
-                        break;
-                    case "V":
-                        strPedidoObservacion = "";
-                        break;
-                }
-
-                strPedidoObservacion += " - TipoEnvio:" + order.TipoEnvio; 
-
-                sSql = "INSERT INTO Orden_De_Compra_Cliente " +
-                    "([ID_Cliente]" +
-                    ",[Numero_Orden]" +
-                    ",[Fecha_Emision]" +
-                    ",[Observaciones]" +
-                    ",[fecha_vto]" +
-                    ",[Log]" +
-                    ",[ID_CP]" +
-                    ",[Tipo_Deposito]"+
-                    ",[DESCUENTO]" +
-                    ",[id_vendedor]" +
-                    ",[usrGeneracion]" +
-                    ",[suc_cli]" +
-                    ",[N_Ord_Com]" +
-                    ",[Estado]" +
-                    ",[Pedido_WEB]"+
-                    ",[ID_Moneda]"+
-                    ",[Moneda_Cotizacion]" +
-                    ")" +
-                    "VALUES" +
-                    "(" + order.Client_ID +
-                    "," + sNumero_Orden  +
-                    ",'" + order.Fecha_Emision.ToString("dd-MM-yyyy") + "'" +
                     //05/05/2020 ITO:ECM-40 Modificación en el envío de las observaciones de los pedidos.
-                    //",'" + (order.UserAction.Trim() == "A" ? "Anula pedido anterior" : "Agrega al pedido anterior") + "'" +
-                    //26/09/2022 Posibilidad de no enviar observacion --> "V"
-                    //",'" + (strUserActionTmp.Trim() == "A" ? "Anula pedido anterior" : "Agrega al pedido anterior") + str20200506075501 + "'" +
-                    ",'" + strPedidoObservacion + "'" +                    
-                    ",'" + order.Fecha_Vto.ToString("dd-MM-yyyy") + "'" +
-                    ",'" + log + "'" +
-                    "," + id_CP +
-                    ","+ (String.IsNullOrEmpty(tipoDeposito) ? "NULL" : tipoDeposito) +
-                    ",0" +
-                    //18/02/2020 ITO : ECM-19 Vendedor No Obligatorio.
-                    //"," + order.Seller_Id +
-                    "," + (String.IsNullOrEmpty(order.Seller_Id.ToString()) ? 0 : order.Seller_Id) +
-                    ",'" + log + "'" +
-                    ",'" + (String.IsNullOrEmpty(order.SucName) ? "": order.SucName) +"'"+
-                    ",'" + order.CanalVentas.Trim() + "_" + order.NroOrdenCompra +"'" +
-                   ",2" + //Estado
-                    ",1"+
-                    ",1"+
-                    ",1"+
-                    ")";
-
-                using (var sqlCommand = new SqlCommand(sSql, oConexion))
-                {
-                    sqlCommand.ExecuteNonQuery();
-                }
-
-                //Paso 3: Actualizo el ultimo comprobante generado
-                sSql = "UPDATE comprobantes_tipo SET ULTIMO_NUMERO = " + sNumero_Orden + "  WHERE id = 'CC'";
-
-                using (var sqlCommand = new SqlCommand(sSql, oConexion))
-                {
-                    sqlCommand.ExecuteNonQuery();
-                }
-
-                //Paso 4: Grabo el detalle del pedido
-                for (int i = 1; i <= order.Detail.Count; i++)
-                {
-                    //JORGE: Considerar productos sin talle color (catálogos)
-                    if (order.Detail[i - 1].ProductVariation_Id == order.Detail[i - 1].Product_Id &&
-                       !order.Detail[i - 1].Product_Id.Equals(ConfigurationManager.AppSettings["descuento"]) && !order.Detail[i - 1].Product_Id.Equals(ConfigurationManager.AppSettings["costoEnvio"])) //DESA-2235 PILAR
+                    var str20200506075501 = "";
+                    var strUserActionTmp = order.UserAction.Trim().Substring(0, 1);
+                    if (order.UserAction.Trim().Length > 1)
                     {
-                        order.Detail[i - 1].Product_Name += NO_VARIANTES;
-                        order.Detail[i - 1].AttributeValue = NO_VARIANTES;
+                        str20200506075501 = order.UserAction.Trim().Substring(1);
+                        strUserActionTmp = strUserActionTmp.Substring(0, 1);
                     }
-                    //DESA-2235 PILAR
-                    else if (order.Detail[i - 1].Product_Id.Equals(ConfigurationManager.AppSettings["descuento"]) || order.Detail[i - 1].Product_Id.Equals(ConfigurationManager.AppSettings["costoEnvio"]))                                             
-                        order.Detail[i - 1].AttributeValue = ConfigurationManager.AppSettings["tamanioGenerico"];                    
-                    //------------------------------------------------------------------------DESA-2235 PILAR
+                    //26/09/2022
+                    var strPedidoObservacion = "";
+                    switch (strUserActionTmp.Trim())
+                    {
+                        case "A":
+                            strPedidoObservacion = "Anula pedido anterior" + str20200506075501;
+                            break;
+                        case "G":
+                            strPedidoObservacion = "Agrega al pedido anterior" + str20200506075501;
+                            break;
+                        case "V":
+                            strPedidoObservacion = "";
+                            break;
+                    }
 
-                    sSql = "INSERT INTO [dbo].[Orden_De_Compra_Cliente_Detalle]" +
-                        "([ID]" +
-                        ",[Linea]" +
-                        ",[Producto_ID]" +
-                        ",[Tamaño]" +
-                        ",[Cantidad]" +
-                        ",[Descripcion_concepto]" +
-                        ",[precio_unitario]" +
-                        //19/02/2020 ITO : ECM-27 Envio de Precio_unitario.
-                        ",[MM_precio_unitario]" +
-                        ",[Cantidad_Pendiente]" +
-                        ",[impo_Desc]" +
-                        ",[Porc_Desc]" +
+                    strPedidoObservacion += " - TipoEnvio:" + order.TipoEnvio;
+
+                    sSql = "INSERT INTO Orden_De_Compra_Cliente " +
+                        "([ID_Cliente]" +
+                        ",[Numero_Orden]" +
+                        ",[Fecha_Emision]" +
+                        ",[Observaciones]" +
+                        ",[fecha_vto]" +
+                        ",[Log]" +
+                        ",[ID_CP]" +
+                        ",[Tipo_Deposito]" +
+                        ",[DESCUENTO]" +
+                        ",[id_vendedor]" +
+                        ",[usrGeneracion]" +
+                        ",[suc_cli]" +
+                        ",[N_Ord_Com]" +
                         ",[Estado]" +
-                        ",[ID_Almacen]"+
-                        ",[PorcentajeIVA]" +
+                        ",[Pedido_WEB]" +
+                        ",[ID_Moneda]" +
+                        ",[Moneda_Cotizacion]" +
                         ")" +
                         "VALUES" +
-                        "(" + sNumero_Orden +
-                        "," + i +
-                        ",'" + order.Detail[i-1].Product_Name + "'" +
-                        ",'" + order.Detail[i-1].AttributeValue + "'" +
-                        "," + order.Detail[i-1].Quantity.ToString().Replace(",", ".") + 
-                        "," + String.Format(CultureInfo.CurrentCulture, "'{0} : {1} : {2}'", order.Detail[i-1].Product_Name, order.Detail[i-1].Product_Description, order.Detail[i-1].AttributeValue) +
-                        "," + order.Detail[i-1].Price.ToString().Replace(",", ".") +
-                        //19/02/2020 ITO : ECM-27 Envio de Precio_unitario.
-                        "," + order.Detail[i - 1].Price.ToString().Replace(",", ".") +
-                        "," + order.Detail[i-1].Quantity.ToString().Replace(",", ".") +
+                        "(" + order.Client_ID +
+                        "," + sNumero_Orden +
+                        ",'" + order.Fecha_Emision.ToString("dd-MM-yyyy") + "'" +
+                        //05/05/2020 ITO:ECM-40 Modificación en el envío de las observaciones de los pedidos.
+                        //",'" + (order.UserAction.Trim() == "A" ? "Anula pedido anterior" : "Agrega al pedido anterior") + "'" +
+                        //26/09/2022 Posibilidad de no enviar observacion --> "V"
+                        //",'" + (strUserActionTmp.Trim() == "A" ? "Anula pedido anterior" : "Agrega al pedido anterior") + str20200506075501 + "'" +
+                        ",'" + strPedidoObservacion + "'" +
+                        ",'" + order.Fecha_Vto.ToString("dd-MM-yyyy") + "'" +
+                        ",'" + log + "'" +
+                        "," + id_CP +
+                        "," + (String.IsNullOrEmpty(tipoDeposito) ? "NULL" : tipoDeposito) +
                         ",0" +
-                        ",0" +
-                        ",2" + //Estado
-                        ",1"+
-                        ",21"+
+                        //18/02/2020 ITO : ECM-19 Vendedor No Obligatorio.
+                        //"," + order.Seller_Id +
+                        "," + (String.IsNullOrEmpty(order.Seller_Id.ToString()) ? 0 : order.Seller_Id) +
+                        ",'" + log + "'" +
+                        ",'" + (String.IsNullOrEmpty(order.SucName) ? "" : order.SucName) + "'" +
+                        ",'" + order.CanalVentas.Trim() + "_" + order.NroOrdenCompra + "'" +
+                       ",2" + //Estado
+                        ",1" +
+                        ",1" +
+                        ",1" +
                         ")";
 
                     using (var sqlCommand = new SqlCommand(sSql, oConexion))
                     {
                         sqlCommand.ExecuteNonQuery();
                     }
-                }
 
-                CloseDBConnection();
-                mensaje = sNumero_Orden;
-            }            
-            return true;
+                    //Paso 3: Actualizo el ultimo comprobante generado
+                    sSql = "UPDATE comprobantes_tipo SET ULTIMO_NUMERO = " + sNumero_Orden + "  WHERE id = 'CC'";
+
+                    using (var sqlCommand = new SqlCommand(sSql, oConexion))
+                    {
+                        sqlCommand.ExecuteNonQuery();
+                    }
+
+                    //Paso 4: Grabo el detalle del pedido
+                    for (int i = 1; i <= order.Detail.Count; i++)
+                    {
+                        try
+                        {
+                            //JORGE: Considerar productos sin talle color (catálogos)
+                            if (order.Detail[i - 1].ProductVariation_Id == order.Detail[i - 1].Product_Id &&
+                               !order.Detail[i - 1].Product_Id.Equals(ConfigurationManager.AppSettings["descuento"]) && !order.Detail[i - 1].Product_Id.Equals(ConfigurationManager.AppSettings["costoEnvio"])) //DESA-2235 PILAR
+                            {
+                                order.Detail[i - 1].Product_Name += NO_VARIANTES;
+                                order.Detail[i - 1].AttributeValue = NO_VARIANTES;
+                            }
+                            //DESA-2235 PILAR
+                            else if (order.Detail[i - 1].Product_Id.Equals(ConfigurationManager.AppSettings["descuento"]) || order.Detail[i - 1].Product_Id.Equals(ConfigurationManager.AppSettings["costoEnvio"]))
+                                order.Detail[i - 1].AttributeValue = ConfigurationManager.AppSettings["tamanioGenerico"];
+                            //------------------------------------------------------------------------DESA-2235 PILAR
+
+                            sSql = "INSERT INTO [dbo].[Orden_De_Compra_Cliente_Detalle]" +
+                                "([ID]" +
+                                ",[Linea]" +
+                                ",[Producto_ID]" +
+                                ",[Tamaño]" +
+                                ",[Cantidad]" +
+                                ",[Descripcion_concepto]" +
+                                ",[precio_unitario]" +
+                                //19/02/2020 ITO : ECM-27 Envio de Precio_unitario.
+                                ",[MM_precio_unitario]" +
+                                ",[Cantidad_Pendiente]" +
+                                ",[impo_Desc]" +
+                                ",[Porc_Desc]" +
+                                ",[Estado]" +
+                                ",[ID_Almacen]" +
+                                ",[PorcentajeIVA]" +
+                                ")" +
+                                "VALUES" +
+                                "(" + sNumero_Orden +
+                                "," + i +
+                                ",'" + order.Detail[i - 1].Product_Name + "'" +
+                                ",'" + order.Detail[i - 1].AttributeValue + "'" +
+                                "," + order.Detail[i - 1].Quantity.ToString().Replace(",", ".") +
+                                "," + String.Format(CultureInfo.CurrentCulture, "'{0} : {1} : {2}'", order.Detail[i - 1].Product_Name, order.Detail[i - 1].Product_Description, order.Detail[i - 1].AttributeValue) +
+                                "," + order.Detail[i - 1].Price.ToString().Replace(",", ".") +
+                                //19/02/2020 ITO : ECM-27 Envio de Precio_unitario.
+                                "," + order.Detail[i - 1].Price.ToString().Replace(",", ".") +
+                                "," + order.Detail[i - 1].Quantity.ToString().Replace(",", ".") +
+                                ",0" +
+                                ",0" +
+                                ",2" + //Estado
+                                ",1" +
+                                ",21" +
+                                ")";
+
+                            using (var sqlCommand = new SqlCommand(sSql, oConexion))
+                            {
+                                sqlCommand.ExecuteNonQuery();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            mensaje = "Error al guardar producto en la orden. Producto: " + order.Detail[i - 1].Product_Name;
+                            return false;
+                        }
+                    }
+
+                    CloseDBConnection();
+                    mensaje = sNumero_Orden;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                mensaje = "Error al guardar la orden. " +  ex.Message;                
+                return false;
+            }
+            
         }
     }
 }

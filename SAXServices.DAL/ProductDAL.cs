@@ -57,8 +57,8 @@ namespace SAXServices.DAL
                     " INNER JOIN [dbo].[Productos] p ON ps.Producto_ID = p.ID" +
                     " INNER JOIN [dbo].[Tamaños] t on t.id = ps.Tamaño" +
                     /*DESA-2261 */
-                    " INNER JOIN [dbo].[Colores] c ON ps.Producto_Id LIKE '%' + c.Abreviado " +
-                   /* " INNER JOIN [dbo].[Colores] c ON p.color =  c.ID " +*/
+                    //" INNER JOIN [dbo].[Colores] c ON ps.Producto_Id LIKE '%' + c.Abreviado " +
+                    " INNER JOIN [dbo].[Colores] c ON p.color =  c.ID " +
                     /*DESA-2261 */
                     " LEFT JOIN [dbo].[Producto_Nivel_1] N1 ON N1.N1_ID = P.N1_ID" +
                     " LEFT JOIN [dbo].[Producto_Nivel_2] N2 ON N2.N2_ID = P.N2_ID" +
@@ -78,6 +78,8 @@ namespace SAXServices.DAL
                             int longitud = Int32.Parse(rsp2["Parametro"].ToString());
                             rsp2.Close();
 
+                            
+
                             var rsp = sqlCommand.ExecuteReader();
 
                             while (rsp.Read())
@@ -93,7 +95,12 @@ namespace SAXServices.DAL
                                 if (!rsp["Producto_ID"].ToString().ToUpper().Equals(ConfigurationManager.AppSettings["descuento"].ToUpper()) && 
                                     !rsp["Producto_ID"].ToString().ToUpper().Equals(ConfigurationManager.AppSettings["costoEnvio"].ToUpper()))
                                 {
-                                    product_id = rsp["Producto_ID"].ToString().Length > longitud ? rsp["Producto_ID"].ToString().Substring(0, longitud) : rsp["Producto_ID"].ToString();
+                                    if (connection.Name.Equals("AL")){
+                                        product_id = rsp["Producto_ID"].ToString().Substring(0, rsp["Producto_ID"].ToString().IndexOf("-")+1);
+                                    }
+                                    else{
+                                        product_id = rsp["Producto_ID"].ToString().Length > longitud ? rsp["Producto_ID"].ToString().Substring(0, longitud) : rsp["Producto_ID"].ToString();
+                                    }
                                 }
                                 else
                                     product_id = rsp["Producto_ID"].ToString();
