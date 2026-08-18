@@ -431,6 +431,10 @@ EF	Exento B	0	NULL	B	8*/
                 parametro = crearParametro("listaPrecios", System.Data.DbType.Int32 , idListaPrecio);
                 sqlCommand.Parameters.Add(parametro);
 
+                parametro = crearParametro("domicilioCiudad", System.Data.DbType.String, cliente.domicilioEnvio.ciudad);                
+                sqlCommand.Parameters.Add(parametro);
+                
+
                 parametro = crearParametro("@ReturnValue", System.Data.DbType.Int32 , 0,System.Data.ParameterDirection.ReturnValue);
                 sqlCommand.Parameters.Add(parametro);
 

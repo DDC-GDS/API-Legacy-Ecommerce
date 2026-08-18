@@ -3,28 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E134C5D2-C303-4128-AB29-4F01A0383B6A}|SAXServices.DAL\\SAXServices.DAL.csproj|c:\\users\\pilar laboro\\vixerant\\sax_services\\saxservices.dal\\clientdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E134C5D2-C303-4128-AB29-4F01A0383B6A}|SAXServices.DAL\\SAXServices.DAL.csproj|C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\saxservices.dal\\clientdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E134C5D2-C303-4128-AB29-4F01A0383B6A}|SAXServices.DAL\\SAXServices.DAL.csproj|solutionrelative:saxservices.dal\\clientdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E134C5D2-C303-4128-AB29-4F01A0383B6A}|SAXServices.DAL\\SAXServices.DAL.csproj|C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\saxservices.dal\\orderbdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E134C5D2-C303-4128-AB29-4F01A0383B6A}|SAXServices.DAL\\SAXServices.DAL.csproj|c:\\users\\pilar laboro\\vixerant\\sax_services\\saxservices.dal\\orderbdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E134C5D2-C303-4128-AB29-4F01A0383B6A}|SAXServices.DAL\\SAXServices.DAL.csproj|solutionrelative:saxservices.dal\\orderbdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E134C5D2-C303-4128-AB29-4F01A0383B6A}|SAXServices.DAL\\SAXServices.DAL.csproj|C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\saxservices.dal\\orderdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E134C5D2-C303-4128-AB29-4F01A0383B6A}|SAXServices.DAL\\SAXServices.DAL.csproj|solutionrelative:saxservices.dal\\orderdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{22B50907-1BDE-4C5A-B590-5C46E01B8EF7}|SAXServices.BL\\SAXServices.BL.csproj|C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\saxservices.bl\\orderbhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{22B50907-1BDE-4C5A-B590-5C46E01B8EF7}|SAXServices.BL\\SAXServices.BL.csproj|solutionrelative:saxservices.bl\\orderbhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{110745E8-6004-46CA-8499-6977998C0408}|SAXServices.Web\\SAXServices.Web.csproj|C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\saxservices.web\\controllers\\orderbcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{110745E8-6004-46CA-8499-6977998C0408}|SAXServices.Web\\SAXServices.Web.csproj|solutionrelative:saxservices.web\\controllers\\orderbcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{110745E8-6004-46CA-8499-6977998C0408}|SAXServices.Web\\SAXServices.Web.csproj|C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\saxservices.web\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{110745E8-6004-46CA-8499-6977998C0408}|SAXServices.Web\\SAXServices.Web.csproj|solutionrelative:saxservices.web\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E134C5D2-C303-4128-AB29-4F01A0383B6A}|SAXServices.DAL\\SAXServices.DAL.csproj|C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\saxservices.dal\\orderdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E134C5D2-C303-4128-AB29-4F01A0383B6A}|SAXServices.DAL\\SAXServices.DAL.csproj|solutionrelative:saxservices.dal\\orderdal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{110745E8-6004-46CA-8499-6977998C0408}|SAXServices.Web\\SAXServices.Web.csproj|C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\saxservices.web\\controllers\\orderbcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{110745E8-6004-46CA-8499-6977998C0408}|SAXServices.Web\\SAXServices.Web.csproj|solutionrelative:saxservices.web\\controllers\\orderbcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -60,7 +60,7 @@
               "RelativeDocumentMoniker": "SAXServices.DAL\\ClientDAL.cs",
               "ToolTip": "C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\SAXServices.DAL\\ClientDAL.cs",
               "RelativeToolTip": "SAXServices.DAL\\ClientDAL.cs",
-              "ViewState": "AgIAAGsBAAAAAAAAAAAEwIABAAA5AAAAAAAAAA==",
+              "ViewState": "AgIAAJUBAAAAAAAAAAD4v6oBAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-03T13:10:28.719Z",
               "EditorCaption": ""
@@ -73,20 +73,20 @@
               "RelativeDocumentMoniker": "SAXServices.DAL\\OrderBDAL.cs",
               "ToolTip": "C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\SAXServices.DAL\\OrderBDAL.cs",
               "RelativeToolTip": "SAXServices.DAL\\OrderBDAL.cs",
-              "ViewState": "AgIAAGYBAAAAAAAAAAAEwIkBAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAFUBAAAAAAAAAAD4v6MBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-28T18:40:03.567Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "OrderBHandler.cs",
               "DocumentMoniker": "C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\SAXServices.BL\\OrderBHandler.cs",
               "RelativeDocumentMoniker": "SAXServices.BL\\OrderBHandler.cs",
               "ToolTip": "C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\SAXServices.BL\\OrderBHandler.cs",
               "RelativeToolTip": "SAXServices.BL\\OrderBHandler.cs",
-              "ViewState": "AgIAAEQAAAAAAAAAAAAtwE0AAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAHcAAAAAAAAAAAAmwIEAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-28T18:40:00.786Z",
               "EditorCaption": ""
@@ -99,26 +99,26 @@
               "RelativeDocumentMoniker": "SAXServices.Web\\Web.config",
               "ToolTip": "C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\SAXServices.Web\\Web.config",
               "RelativeToolTip": "SAXServices.Web\\Web.config",
-              "ViewState": "AgIAAFAAAAAAAAAAAAAcwGgAAAAEAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
               "WhenOpened": "2026-05-28T18:40:11.791Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
               "Title": "OrderDAL.cs",
               "DocumentMoniker": "C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\SAXServices.DAL\\OrderDAL.cs",
               "RelativeDocumentMoniker": "SAXServices.DAL\\OrderDAL.cs",
               "ToolTip": "C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\SAXServices.DAL\\OrderDAL.cs",
               "RelativeToolTip": "SAXServices.DAL\\OrderDAL.cs",
-              "ViewState": "AgIAAEUBAAAAAAAAAAAWwFkBAAAkAAAAAAAAAA==",
+              "ViewState": "AgIAAGYBAAAAAAAAAAAWwHkBAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-28T18:40:11.802Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "OrderBController.cs",
               "DocumentMoniker": "C:\\Users\\Pilar laboro\\Vixerant\\SAX_Services\\SAXServices.Web\\Controllers\\OrderBController.cs",
               "RelativeDocumentMoniker": "SAXServices.Web\\Controllers\\OrderBController.cs",
