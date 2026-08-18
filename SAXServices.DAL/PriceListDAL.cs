@@ -123,7 +123,8 @@ namespace SAXServices.DAL
                         //"INNER JOIN Colores c ON pp.Producto_Id LIKE '%' + c.Abreviado " +
                         //-------------------------------------------------------------------------------------------DESA-2262 Pilar                    
                         "INNER JOIN Productos_Stock st ON pp.Producto_Id = st.Producto_ID " + //Filtrar por Productos tipo Web
-                        "WHERE Convert(date, pp.FVigencia) <= '{0}' and Convert(date, pp.FHasta) >= '{0}' and st.Web = 1 and st.activo = 1 and p.existe=1 " + whereNombre +                         
+                        //"WHERE Convert(date, pp.FVigencia) <= '{0}' and Convert(date, pp.FHasta) >= '{0}' and st.Web = 1 and st.activo = 1 and p.existe=1 " + whereNombre +                         
+                        "WHERE  pp.FVigencia <= '{0}' and pp.FHasta >= '{0}' and st.Web = 1 and st.activo = 1 and p.existe=1 " + whereNombre +                         
                     "UNION " +
                         "SELECT lista_h.descripcion,lista_h.modificado,pph.[id_lista_precios],pph.[Precio],pph.[Producto_ID],pph.[Tamaño],pph.[FVigencia],pph.[FHasta],c.Abreviado as Color " +
                         //DESA-2262 Pilar - agrego join con listas_precio para acotar el resultado de precios a las listas web activas, y join con productos para tomar el color,
@@ -136,7 +137,8 @@ namespace SAXServices.DAL
                          //"INNER JOIN Colores c ON pph.Producto_Id LIKE '%' + c.Abreviado " +
                          //-------------------------------------------------------------------------------------------DESA-2262 Pilar                    
                          "INNER JOIN Productos_Stock st ON pph.Producto_Id = st.Producto_ID " + //Filtrar por Productos tipo Web
-                        "WHERE st.Web = 1  and Convert(date, pph.FVigencia) <= '{0}' and Convert(date, pph.FHasta) >= '{0}' and st.activo = 1 and p.existe=1 " + whereHNombre, fechaVigencia.ToString("yyyyMMdd", CultureInfo.CurrentCulture));
+                        //"WHERE st.Web = 1  and Convert(date, pph.FVigencia) <= '{0}' and Convert(date, pph.FHasta) >= '{0}' and st.activo = 1 and p.existe=1 " + whereHNombre, fechaVigencia.ToString("yyyyMMdd", CultureInfo.CurrentCulture));
+                        "WHERE st.Web = 1  and  pph.FVigencia <= '{0}' and pph.FHasta >= '{0}' and st.activo = 1 and p.existe=1 " + whereHNombre, fechaVigencia);
 
                     using (var sqlCommand = new SqlCommand(sSql, oConexion))
                     {

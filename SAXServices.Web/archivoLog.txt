@@ -1,0 +1,11 @@
+﻿[2025-10-30 10:38:34] INICIO servicio ****: PriceList.Get
+[2025-10-30 10:38:45] FIN    servicio ****: PriceList.Get: OK / 
+[2025-10-30 10:41:10] INICIO servicio ****: PriceList.Get: ALLista ABRIL 24 WEB Y LOCAL
+[2025-10-30 10:41:18] FIN    servicio ****: PriceList.Get: OK / Cantidad de productos: 6469
+[2025-10-30 10:48:00] INICIO servicio ****: PriceList.Get: ALLista ABRIL 24 WEB Y LOCAL
+[2025-10-30 10:48:22] FIN    servicio ****: PriceList.Get: OK / Cantidad de productos: 6781
+[2025-10-30 10:49:06] INICIO servicio ****: PriceList.Get
+[2025-10-30 10:49:17] FIN    servicio ****: PriceList.Get: OK / 
+[2025-10-30 11:25:03] INICIO servicio ****: PriceList.Get
+[2025-10-30 11:36:37] INICIO servicio ****: PriceList.Get
+[2025-10-30 11:38:01] INICIO servicio ****: PriceList.Get
