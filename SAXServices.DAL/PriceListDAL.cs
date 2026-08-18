@@ -35,6 +35,7 @@ namespace SAXServices.DAL
         {
             var result = new List<PriceList>();
             var listaPrecios = new Dictionary <int,PriceList>();
+            String product_id = "";
 
             if (OpenDBConnection(connection.ConnectionString))
             {
@@ -86,9 +87,20 @@ namespace SAXServices.DAL
                         {
                             priceListItems.Add((int)rsp["id_lista_precios"], new List<PriceListItem>());
                         }
-//                      aqui
-//                      var product_id = String.Concat(rsp["Producto_ID"].ToString().TakeWhile(c => Char.IsNumber(c)));
-                        var product_id = rsp["Producto_ID"].ToString().Length > longitud ? rsp["Producto_ID"].ToString().Substring(0, longitud) : rsp["Producto_ID"].ToString();
+                        //                      aqui
+                        //                      var product_id = String.Concat(rsp["Producto_ID"].ToString().TakeWhile(c => Char.IsNumber(c)));
+                       
+                        //DESA-2367 Pilar
+                        if (connection.Name.Equals("AL"))
+                        {
+                            product_id = rsp["Producto_ID"].ToString().Substring(0, rsp["Producto_ID"].ToString().IndexOf("-") + 1);
+                        }
+                        //----------------------------------------------DESA-2367 Pilar
+                        else
+                        {
+                            product_id = rsp["Producto_ID"].ToString().Length > longitud ? rsp["Producto_ID"].ToString().Substring(0, longitud) : rsp["Producto_ID"].ToString();
+                        }
+                        
                         var color = rsp["Color"].ToString().Trim();
 
                         priceListItems[(int)rsp["id_lista_precios"]].Add(
