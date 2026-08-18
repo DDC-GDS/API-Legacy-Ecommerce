@@ -1,0 +1,29 @@
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.BL\bin\Debug\SAXServices.BL.dll
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.BL\bin\Debug\SAXServices.BL.pdb
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.BL\bin\Debug\SAXServices.Contracts.dll
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.BL\bin\Debug\SAXServices.DAL.dll
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.BL\bin\Debug\SAXServices.DAL.pdb
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.BL\bin\Debug\SAXServices.Contracts.pdb
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.BL\obj\Debug\SAXServices.BL.csprojResolveAssemblyReference.cache
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.BL\obj\Debug\SAXServices.BL.dll
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.BL\obj\Debug\SAXServices.BL.pdb
+C:\SAX_bitbucket\sax_services\SAXServices.BL\bin\Debug\SAXServices.BL.dll
+C:\SAX_bitbucket\sax_services\SAXServices.BL\bin\Debug\SAXServices.BL.pdb
+C:\SAX_bitbucket\sax_services\SAXServices.BL\bin\Debug\SAXServices.Contracts.dll
+C:\SAX_bitbucket\sax_services\SAXServices.BL\bin\Debug\SAXServices.DAL.dll
+C:\SAX_bitbucket\sax_services\SAXServices.BL\bin\Debug\SAXServices.DAL.pdb
+C:\SAX_bitbucket\sax_services\SAXServices.BL\bin\Debug\SAXServices.Contracts.pdb
+C:\SAX_bitbucket\sax_services\SAXServices.BL\obj\Debug\SAXServices.BL.csprojResolveAssemblyReference.cache
+C:\SAX_bitbucket\sax_services\SAXServices.BL\obj\Debug\SAXServices.BL.dll
+C:\SAX_bitbucket\sax_services\SAXServices.BL\obj\Debug\SAXServices.BL.pdb
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\obj\Debug\SAXServices.BL.csproj.AssemblyReference.cache
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\obj\Debug\SAXServices.BL.csproj.CoreCompileInputs.cache
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\obj\Debug\SAXServices.BL.dll
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\obj\Debug\SAXServices.BL.pdb
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\bin\Debug\SAXServices.BL.dll
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\bin\Debug\SAXServices.BL.pdb
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\bin\Debug\SAXServices.Contracts.dll
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\bin\Debug\SAXServices.DAL.dll
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\bin\Debug\SAXServices.DAL.pdb
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\bin\Debug\SAXServices.Contracts.pdb
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\obj\Debug\SAXServices.BL.csproj.CopyComplete

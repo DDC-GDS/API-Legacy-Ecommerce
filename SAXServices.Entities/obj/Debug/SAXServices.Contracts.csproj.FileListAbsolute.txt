@@ -1,0 +1,15 @@
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.Entities\bin\Debug\SAXServices.Contracts.dll
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.Entities\bin\Debug\SAXServices.Contracts.pdb
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.dll
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.pdb
+C:\SAX_bitbucket\sax_services\SAXServices.Entities\bin\Debug\SAXServices.Contracts.dll
+C:\SAX_bitbucket\sax_services\SAXServices.Entities\bin\Debug\SAXServices.Contracts.pdb
+C:\SAX_bitbucket\sax_services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.csprojResolveAssemblyReference.cache
+C:\SAX_bitbucket\sax_services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.dll
+C:\SAX_bitbucket\sax_services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.pdb
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.csprojResolveAssemblyReference.cache
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Entities\bin\Debug\SAXServices.Contracts.dll
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Entities\bin\Debug\SAXServices.Contracts.pdb
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.csproj.CoreCompileInputs.cache
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.dll
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.pdb

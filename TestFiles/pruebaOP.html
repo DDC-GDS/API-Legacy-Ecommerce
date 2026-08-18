@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript">
+        function SendOP()
+	{
+	};
+    </script>
+</head>
+<body>
+    <!--<form action="http://askipusax.dyndns.biz:65010/api/Order" method="post" name="form" onSubmit="">-->
+    <form action="http://localhost:58949/api/Order" method="post" name="form" onSubmit="">
+	<p>Cabecera</p>
+	<br>
+    <label>Order_id: </label>
+	<input name="Order_id" maxLength="11" tabindex="" size="20" value="1"> </input>
+	<br>
+    <label>Client_id: </label>
+	<input name="Client_ID" maxLength="10" tabindex="" size="20" value="18"> </input>
+	<br>
+    <label>SucName: </label>
+    <input name="SucName" maxLength="10" tabindex="" size="20" value="1"> </input>
+    <br>
+    <label>User_id: </label>
+    <input name="User_ID" maxLength="10" tabindex="" size="20" value="eco"> </input>
+    <br>
+    <label>Fecha_Emision: </label>
+	<input name="Fecha_Emision" maxLength="20" tabindex="" size="20" value="01/12/2018"> </input>
+	<br>
+    <label>Fecha_Vto: </label>
+	<input name="Fecha_Vto" maxLength="20" tabindex="" size="20"> </input>
+	<br>
+    <label>Seller_id: </label>
+	<input name="Seller_Id" maxLength="10" tabindex="" size="20" value="9"> </input>
+	<br>
+    <label>UserAction: </label>
+    <input name="UserAction" maxLength="10" tabindex="" size="20" value="G"> </input>
+    <br>
+	<p>Detalle</p>
+	<br>
+        <label>Order_id: </label>
+		<input name="Detail[0][Order_id]" maxLength="11" tabindex="" size="20" value="1"> </input>
+		<br>
+        <label>Product_id: </label>
+		<input name="Detail[0][Product_Id]" maxLength="20" tabindex="" size="20" value="171240"> </input>
+		<br>
+        <label>Product_Name: </label>
+		<input name="Detail[0][Product_Name]" maxLength="20" tabindex="" size="20"> </input>
+		<br>
+        <label>Product_Description: </label>
+		<input name="Detail[0][Product_Description]" maxLength="200" tabindex="" size="50" > </input>
+		<br>
+        <label>ProductVariation_id: </label>
+		<input name="Detail[0][ProductVariation_Id]" maxLength="20" tabindex="" size="20" value="171240BLANC100"> </input>
+		<br>
+        <label>AttributeValue: </label>
+		<input name="Detail[0][AttributeValue]" maxLength="20" tabindex="" size="20" value="100"> </input>
+		<br>
+        <label>Quantity: </label>
+		<input name="Detail[0][Quantity]" maxLength="10" tabindex="" size="20" value="20.0"> </input>
+		<br>
+        <label>Price: </label>
+		<input name="Detail[0][Price]" maxLength="10" tabindex="" size="20"> </input>
+		<br>
+        <label>PriceList_Name: </label>
+		<input name="Detail[0][PriceList_Name]" maxLength="20" tabindex="" size="20"> </input>
+		<br>
+	<input name="submit" type="submit" value="Enviar" tabIndex="10"></input>
+    </form>
+</body>
+</html>

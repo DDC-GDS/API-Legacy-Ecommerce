@@ -1,0 +1,23 @@
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.DAL\bin\Debug\SAXServices.DAL.dll
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.DAL\bin\Debug\SAXServices.DAL.pdb
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.DAL\bin\Debug\SAXServices.Contracts.dll
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.DAL\bin\Debug\SAXServices.Contracts.pdb
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.csprojResolveAssemblyReference.cache
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.dll
+C:\Users\Ezequiel\Documents\Sax_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.pdb
+C:\SAX_bitbucket\sax_services\SAXServices.DAL\bin\Debug\SAXServices.DAL.dll
+C:\SAX_bitbucket\sax_services\SAXServices.DAL\bin\Debug\SAXServices.DAL.pdb
+C:\SAX_bitbucket\sax_services\SAXServices.DAL\bin\Debug\SAXServices.Contracts.dll
+C:\SAX_bitbucket\sax_services\SAXServices.DAL\bin\Debug\SAXServices.Contracts.pdb
+C:\SAX_bitbucket\sax_services\SAXServices.DAL\obj\Debug\SAXServices.DAL.csprojResolveAssemblyReference.cache
+C:\SAX_bitbucket\sax_services\SAXServices.DAL\obj\Debug\SAXServices.DAL.dll
+C:\SAX_bitbucket\sax_services\SAXServices.DAL\obj\Debug\SAXServices.DAL.pdb
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\bin\Debug\SAXServices.DAL.dll
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\bin\Debug\SAXServices.DAL.pdb
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\bin\Debug\SAXServices.Contracts.dll
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\bin\Debug\SAXServices.Contracts.pdb
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.csproj.AssemblyReference.cache
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.csproj.CoreCompileInputs.cache
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.csproj.CopyComplete
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.dll
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.pdb

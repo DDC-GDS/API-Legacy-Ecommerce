@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAXServices.BL", "SAXServices.BL\SAXServices.BL.csproj", "{22B50907-1BDE-4C5A-B590-5C46E01B8EF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAXServices.Web", "SAXServices.Web\SAXServices.Web.csproj", "{110745E8-6004-46CA-8499-6977998C0408}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAXServices.Contracts", "SAXServices.Entities\SAXServices.Contracts.csproj", "{7CB969B2-4B84-4BB5-8A20-BBFE552B3BBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAXServices.DAL", "SAXServices.DAL\SAXServices.DAL.csproj", "{E134C5D2-C303-4128-AB29-4F01A0383B6A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestFiles", "TestFiles", "{6A99AD7F-FEEB-4ADD-A1DF-6330B5078996}"
+	ProjectSection(SolutionItems) = preProject
+		TestFiles\pruebaOP.html = TestFiles\pruebaOP.html
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22B50907-1BDE-4C5A-B590-5C46E01B8EF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22B50907-1BDE-4C5A-B590-5C46E01B8EF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22B50907-1BDE-4C5A-B590-5C46E01B8EF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22B50907-1BDE-4C5A-B590-5C46E01B8EF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{110745E8-6004-46CA-8499-6977998C0408}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{110745E8-6004-46CA-8499-6977998C0408}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{110745E8-6004-46CA-8499-6977998C0408}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{110745E8-6004-46CA-8499-6977998C0408}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CB969B2-4B84-4BB5-8A20-BBFE552B3BBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CB969B2-4B84-4BB5-8A20-BBFE552B3BBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CB969B2-4B84-4BB5-8A20-BBFE552B3BBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CB969B2-4B84-4BB5-8A20-BBFE552B3BBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E134C5D2-C303-4128-AB29-4F01A0383B6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E134C5D2-C303-4128-AB29-4F01A0383B6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E134C5D2-C303-4128-AB29-4F01A0383B6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E134C5D2-C303-4128-AB29-4F01A0383B6A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		VisualSVNWorkingCopyRoot = .
+	EndGlobalSection
+EndGlobal
