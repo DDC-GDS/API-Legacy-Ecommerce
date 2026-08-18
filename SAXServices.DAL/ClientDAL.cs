@@ -381,7 +381,7 @@ EF	Exento B	0	NULL	B	8*/
                 }
                 else if (cliente.documentoTipo.ToUpper().Equals("DNI"))
                 {
-                    parametro = crearParametro("cuit", System.Data.DbType.String,"");
+                    parametro = crearParametro("cuit", System.Data.DbType.String,"CIF" + cliente.documentoNro);
                     sqlCommand.Parameters.Add(parametro);
                     parametro = crearParametro("tipoDocumentoAfip", System.Data.DbType.String, ((int)enumTipoDocumento.DNI) );
                     sqlCommand.Parameters.Add(parametro);
@@ -408,7 +408,7 @@ EF	Exento B	0	NULL	B	8*/
                 {
                     dcilio = "Pcia: " + cliente.domicilioFacturacion.provinciaNombre + " / ciudad:" + cliente.domicilioFacturacion.ciudad + " / calle: " + cliente.domicilioFacturacion.calle + " nro: " + cliente.domicilioFacturacion.numero
                             + " / observaciones: " + cliente.domicilioFacturacion.comentarios;
-                    parametro = crearParametro("domicilio", System.Data.DbType.String, " COMPLETAR");
+                    parametro = crearParametro("domicilio", System.Data.DbType.String, cliente.domicilioFacturacion.calle + " nro: " + cliente.domicilioFacturacion.numero);
                     sqlCommand.Parameters.Add(parametro);
                     parametro = crearParametro("codigoPostal", System.Data.DbType.String, cliente.domicilioFacturacion.codigoPostal);
                     sqlCommand.Parameters.Add(parametro);
@@ -420,7 +420,7 @@ EF	Exento B	0	NULL	B	8*/
                 {
                     dcilioEntrega = "Pcia: " + cliente.domicilioEnvio.provinciaNombre + " / ciudad:" + cliente.domicilioEnvio.ciudad + " /  cp:" + cliente.domicilioEnvio.codigoPostal + " / calle: " + cliente.domicilioEnvio.calle + " nro: " + cliente.domicilioEnvio.numero
                            + " / observaciones: " + cliente.domicilioEnvio.comentarios;
-                    parametro = crearParametro("domicilioEntrega", System.Data.DbType.String, " COMPLETAR");
+                    parametro = crearParametro("domicilioEntrega", System.Data.DbType.String, cliente.domicilioEnvio.calle + " nro: " + cliente.domicilioEnvio.numero);
                     sqlCommand.Parameters.Add(parametro);                    
                     parametro = crearParametro("telefonoEntrega", System.Data.DbType.String, cliente.domicilioEnvio.telefono);
                     sqlCommand.Parameters.Add(parametro);
