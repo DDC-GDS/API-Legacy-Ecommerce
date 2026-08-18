@@ -237,7 +237,50 @@ namespace SAXServices.DAL
             else
                 return false;
         }
-                
+
+        public Boolean GetByNroDocumento(String  nroDocumento, out String mensaje, out Client cliente)
+        {
+            Client result = null;
+            mensaje = "";
+            cliente = null;
+            var lista = new List<Client>();
+            var connections = ConfigurationManager.ConnectionStrings;
+            foreach (ConnectionStringSettings connection in connections)
+            {
+                if (OpenDBConnection(connection.ConnectionString))
+                {
+                    // Busco cliente por cuit
+                    var sSql = "SELECT * FROM Clientes cs ";
+
+                    if (!nroDocumento.Equals("")) sSql += String.Format(CultureInfo.CurrentCulture, "WHERE Numero_documento='{0}' AND Tipo_doc_Afip not in(80,86)", nroDocumento);
+
+                    using (var sqlCommand = new SqlCommand(sSql, oConexion))
+                    {
+                        var rsp = sqlCommand.ExecuteReader();
+                        if (rsp.HasRows)
+                        {
+                            result = new Client();
+                            rsp.Read();
+                            this.GetClientData(connection, (int)rsp["CLIENTE_ID"], ref lista, out mensaje);
+                            /*result.Client_ID = (int)rsp["Cliente_Id"];
+                            result.CUIT = (string)rsp["CUIT"];
+                            result.Name = (string)rsp["Nombre"];*/
+                            //result = lista.FirstOrDefault();
+
+                        }
+                        rsp.Close();
+                    }
+                    CloseDBConnection();
+                }
+            }
+            if (mensaje.Equals(""))
+            {
+                cliente = lista.FirstOrDefault();
+                return true;
+            }
+            else
+                return false;
+        }
 
         /**Cliente WEB***/
         public bool Save(ClienteWeb element, out String mensaje, String listaPrecios )
@@ -251,8 +294,12 @@ namespace SAXServices.DAL
                 if (OpenDBConnection(connection.ConnectionString))
                 {
                     if (validarCliente(element, out mensaje))
-                        if (saveCliente(element, out mensaje, listaPrecios))
+                    {
+                        int listaLength = listaPrecios.Length;
+                        String lista = listaPrecios.Substring(connection.Name.Length, listaLength- connection.Name.Length);
+                        if (saveCliente(element, out mensaje, lista))
                             result = true;
+                    }                    
                 }
                 CloseDBConnection();
             }                       
@@ -277,8 +324,8 @@ EF	Exento B	0	NULL	B	8*/
             mensaje = null;
 
 
-            if (cliente.nombre.Equals("") || cliente.domicilioFacturacion.calle.Equals("") || cliente.domicilioFacturacion.codigoPostal.Equals("") || cliente.domicilioFacturacion.ciudad.Equals("")){
-                mensaje += " / Complete todos los campos obligatorios: Razon Social,Domicilio,Codigo Postal, y CUIT";
+            if ((cliente.apellido + cliente.nombre).Equals("") || cliente.domicilioFacturacion.calle.Equals("") || cliente.domicilioFacturacion.codigoPostal.Equals("") || cliente.domicilioFacturacion.ciudad.Equals("")){
+                mensaje += " / Complete todos los campos obligatorios: Razon Social,Domicili y Codigo Postal";
                 validarCliente = false;
             }
 
@@ -334,9 +381,8 @@ EF	Exento B	0	NULL	B	8*/
                 }
                 else if (cliente.documentoTipo.ToUpper().Equals("DNI"))
                 {
-                    /*DESA-2235 Pilar*/
-                    //da error porque falta el cuit--> lo toma como el cliente web                    
-                    /*------------------------------------------DESA-2235 Pilar*/
+                    parametro = crearParametro("cuit", System.Data.DbType.String,"");
+                    sqlCommand.Parameters.Add(parametro);
                     parametro = crearParametro("tipoDocumentoAfip", System.Data.DbType.String, ((int)enumTipoDocumento.DNI) );
                     sqlCommand.Parameters.Add(parametro);
                     parametro = crearParametro("numeroDocumento", System.Data.DbType.String, cliente.documentoNro);

@@ -30,6 +30,8 @@ namespace SAXServices.DAL
 
         Boolean GetByCuit(string cuit, out String mensaje, out Client cliente);
 
+        Boolean GetByNroDocumento(String nroDocumento, out String mensaje, out Client cliente);
+
         Boolean Save(T element);       
 
         //T GetByCuit(string cuit);

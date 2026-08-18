@@ -70,27 +70,28 @@ namespace SAXServices.BL
         public bool Save(OrderB order, out string mensaje)
         {
             bool result = false;
+            var sb = new StringBuilder();
 
             result = ValidateOrder(order, out mensaje);
-
+            sb.AppendLine(mensaje); 
             if (result)
             {
                 result = this._orderDAL.Save(order,out mensaje);
 
                 if (result)
                 {                    
-                    mensaje += String.Format(CultureInfo.CurrentCulture, " La orden {0} se guardó en forma exitosa", order.NroOrdenCompra);
+                    sb.AppendLine(String.Format(CultureInfo.CurrentCulture, " La orden {0} se guardó en forma exitosa", order.NroOrdenCompra));
                 }
                 else
                 {
                     if (order.NroOrdenCompra.Equals("-2")){
-                        mensaje += String.Format(CultureInfo.CurrentCulture, "Conexión inválida");
+                        sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "Conexión inválida"));
                     }
                     else
-                        mensaje += String.Format(CultureInfo.CurrentCulture, " No se pudo generar la orden {0}", order.NroOrdenCompra);
+                        sb.AppendLine(String.Format(CultureInfo.CurrentCulture, " No se pudo generar la orden {0}", order.NroOrdenCompra));
                 }
 
-                    
+                mensaje = sb.ToString();    
             }            
 
             return result;
@@ -126,59 +127,71 @@ namespace SAXServices.BL
 
                 ///Validación 1: Cliente inexistente    
                 Client cliente;
-                if (this._clientDAL.GetByCuit(order.cliente.documentoNro, out mensaje, out cliente))
+                if (order.cliente.documentoTipo.Equals("CUIT") || order.cliente.documentoTipo.Equals("CUIL") || order.cliente.documentoTipo.Equals("CDI"))
                 {
-                    if (cliente == null)
+                    if (!this._clientDAL.GetByCuit(order.cliente.documentoNro, out mensaje, out cliente))
                     {
-                        /*DESA-2053 el cliente no existe*/
-                        //if (client == null){                    
-                        resultado = this._clientWebDAL.Save(order.cliente, out mensaje, order.Detail[0].PriceList_Name);
-                        if (resultado)
-                        {
-                            /*Se pudo crear el nuevo cliente*/
-                            order.Client_ID = Int32.Parse(mensaje);
-                            sb.AppendLine("CUIT de cliente inexistente. Se creo el cliente: " + order.cliente.apellido + " " + order.cliente.nombre + " - CUIT:" + order.cliente.documentoNro);
-                        }
-                        /*DESA-2235 PILAR*/
-                        else
-                        {
-                            /*Dió error la creación --> tomo cliente genérico web*/
-                            if (this._clientDAL.GetById(Int32.Parse(ConfigurationManager.AppSettings["clienteWeb"]), out mensaje, out cliente))
-                            {
-                                if(cliente != null)
-                                {
-                                    order.Client_ID = cliente.Client_ID;
-                                    resultado = (cliente != null);
-                                    mensaje = "Datos del cliente inválidos. Se tomó el cliente web: " + cliente.Name;
-                                }
-                                else
-                                {
-                                    mensaje += "Error al recuperar el cliente genérico Web";
-                                    return false;
-                                }
-                                
-                            }
-                            else
-                            {
-                                mensaje += "Error al recuperar el cliente genérico Web";                                
-                                return false;
-                            }
-                        }
-                        /*-------------------------------------------------------DESA-2235 PILAR*/
-                        sb.AppendLine(mensaje);
+                        sb.AppendLine("Error al recuperar el cliente por cuit/cuil."  + mensaje);
+                        return false;
                     }
-                    else
-                        order.Client_ID = cliente.Client_ID;
                 }
                 else
                 {
-                    mensaje += "Error al recuperar el cliente";                    
-                    return false;
+                    if (!this._clientDAL.GetByNroDocumento(order.cliente.documentoNro, out mensaje, out cliente))
+                    {
+                        sb.AppendLine("Error al recuperar el cliente por número de documento." + mensaje);
+                        return false;
+                    }
                 }
-
-
-                if (resultado)
+                                
+                if (cliente != null)
+                    order.Client_ID = cliente.Client_ID;
+                
+                if (cliente == null)
                 {
+                    /*DESA-2053 el cliente no existe*/
+                    //if (client == null){                    
+                    resultado = this._clientWebDAL.Save(order.cliente, out mensaje, order.Detail[0].PriceList_Name);
+                    if (resultado)
+                    {
+                            /*Se pudo crear el nuevo cliente*/
+                            order.Client_ID = Int32.Parse(mensaje);
+                            sb.AppendLine("Se creo el cliente: " + order.cliente.apellido + " " + order.cliente.nombre + " - CUIT:" + order.cliente.documentoNro);
+                    }
+                    /*DESA-2235 PILAR*/
+                    else
+                    {
+                        /*Dió error la creación --> tomo cliente genérico web*/
+                        String mensajeValidar = mensaje; 
+                        if (this._clientDAL.GetById(Int32.Parse(ConfigurationManager.AppSettings["clienteWeb"]), out mensaje, out cliente))
+                        {
+                            if(cliente != null)
+                             {
+                                order.Client_ID = cliente.Client_ID;
+                                resultado = (cliente != null);
+                                sb.AppendLine ("Datos del cliente inválidos. " + mensajeValidar + " Se tomó el cliente web: " + cliente.Name);
+                             }
+                             else
+                             {
+                                sb.AppendLine("Error al recuperar el cliente genérico Web");
+                                return false;
+                             }
+                                
+                        }
+                        else
+                        {
+                                sb.AppendLine("Error al recuperar el cliente genérico Web");                                
+                                return false;
+                        }
+                    }
+                         /*-------------------------------------------------------DESA-2235 PILAR*/
+                            sb.AppendLine(mensaje);
+                }
+                else
+                    order.Client_ID = cliente.Client_ID;
+
+            if (resultado)
+             {
                     List<Client> clientes = new List<Client>();
                     if (this._clientDAL.Get(out mensaje, out clientes))
                     {
@@ -221,7 +234,7 @@ namespace SAXServices.BL
                     }
                     else
                     {
-                        mensaje += "Error al recuperar las listas de precios del cliente";
+                        sb.AppendLine("Error al recuperar las listas de precios del cliente");
                         return false;
                     }
 
@@ -242,7 +255,7 @@ namespace SAXServices.BL
                 List<Product> productos;
                 if(!this._productDAL.Get(out mensaje,out productos))
                 {
-                    mensaje += "Error al recuperar productos";
+                    sb.AppendLine("Error al recuperar productos");
                     return false;
                 }
                 //--------------------------------------DESA-2235 PILAR '
