@@ -81,7 +81,15 @@ namespace SAXServices.BL
                     mensaje += String.Format(CultureInfo.CurrentCulture, " La orden {0} se guardó en forma exitosa", order.NroOrdenCompra);
                 }
                 else
-                    mensaje += String.Format(CultureInfo.CurrentCulture, " No se pudo generar la orden {0}", order.NroOrdenCompra);
+                {
+                    if (order.NroOrdenCompra.Equals("-2")){
+                        mensaje += String.Format(CultureInfo.CurrentCulture, "Conexión inválida");
+                    }
+                    else
+                        mensaje += String.Format(CultureInfo.CurrentCulture, " No se pudo generar la orden {0}", order.NroOrdenCompra);
+                }
+
+                    
             }            
 
             return result;
@@ -173,7 +181,7 @@ namespace SAXServices.BL
                     //26/09/2022 Posibilidad de no enviar observacion --> "V"
                     if (order.UserAction.Trim().Substring(0, 1) != "A" && order.UserAction.Trim().Substring(0, 1) != "G" && order.UserAction.Trim().Substring(0, 1) != "V")
                     {
-                        sb.AppendLine("Acción inválida del usuario. No se indica si Anula o Agrega al pedido");
+                        sb.AppendLine("Acción inválida del usuario. No se indica si anula o agrega al pedido");
                         resultado = false;
                     }
                 }
@@ -212,7 +220,7 @@ namespace SAXServices.BL
                     //------------------------------------DESA-2235 PILAR '                    
                     if (products.Where(p => p.Product_Id.ToUpper().Equals(detail.Product_Id.ToUpper())).Count() <= 0)
                     {
-                        sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "Id de Producto {0} Inválido o inexistente. Verifique.", detail.Product_Id));
+                       sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "Id de Producto {0} Inválido o inexistente. Verifique.", detail.Product_Id));
                        resultado = false;
                        break; 
                     }
@@ -263,18 +271,24 @@ namespace SAXServices.BL
 
                         /*DESA-2235 Pilar si es descuento o costo envío le asigno el idProducto correspondiente*/
                         if (!detail.Product_Id.ToUpper().Equals(ConfigurationManager.AppSettings["descuento"].ToUpper()) && !detail.Product_Id.ToUpper().Equals(ConfigurationManager.AppSettings["costoEnvio"].ToUpper()))
-                        //---------------------------------------------------DESA-2235 Pilar'
+                            //---------------------------------------------------DESA-2235 Pilar'
                         {
-                            priceList = prices.FirstOrDefault(l => l.Items.Exists(p => p.Product_Id.ToUpper().Equals(detail.Product_Id.ToUpper()) && p.ProductVariation_Id.ToUpper().Equals(detail.ProductVariation_Id.ToUpper())));
-                            if (priceList == null)
+                            if (ConfigurationManager.AppSettings["precioDeLista"].Equals("TRUE"))
                             {
-                                sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "No existe el producto {0} variante {1} en las listas de precios del cliente {2}. Verifique.", detail.Product_Id, detail.ProductVariation_Id, client.Name));
-                                resultado = false;
+                                priceList = prices.FirstOrDefault(l => l.Items.Exists(p => p.Product_Id.ToUpper().Equals(detail.Product_Id.ToUpper()) && p.ProductVariation_Id.ToUpper().Equals(detail.ProductVariation_Id.ToUpper())));
+                                if (priceList == null)
+                                {
+                                    sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "No existe el producto {0} variante {1} en las listas de precios del cliente {2}. Verifique.", detail.Product_Id, detail.ProductVariation_Id, client.Name));
+                                    resultado = false;
+                                }
+                                else
+                                {
+                                    detail.PriceList_Name = priceList.Name;
+                                    detail.Price = priceList.Items.Find(p => p.Product_Id.ToUpper().Equals(detail.Product_Id.ToUpper()) && p.ProductVariation_Id.ToUpper().Equals(detail.ProductVariation_Id.ToUpper())).Price;
+                                }
                             }
-                            else
-                            {
-                                detail.PriceList_Name = priceList.Name;
-                                detail.Price = priceList.Items.Find(p => p.Product_Id.ToUpper().Equals(detail.Product_Id.ToUpper()) && p.ProductVariation_Id.ToUpper().Equals(detail.ProductVariation_Id.ToUpper())).Price;
+                            else { 
+                                /*toma el precio que tiene la orden de pedido*/
                             }
                         }
                     }

@@ -57,7 +57,7 @@ namespace SAXServices.DAL
                      ContCategoria +
 
                     ",t.[Orden] as Orden" +
-                    ",OPedidos.cantidadPrefacturada " +
+                    ",isnull(OPedidos.cantidadPrefacturada,0) as cantidadPrefacturada " +
                     ",isnull(OPedidosPendientes.cantidad,0) as cantidadPedidosPendientes " +
                     " FROM [dbo].[Productos_Stock] ps" +
                     " INNER JOIN [dbo].[Productos] p ON ps.Producto_ID = p.ID" +
