@@ -365,6 +365,8 @@ namespace SAXServices.DAL
 
                     strPedidoObservacion += " - TipoEnvio:" + order.TipoEnvio;
 
+                    OpenDBTransaction();
+
                     sSql = "INSERT INTO Orden_De_Compra_Cliente " +
                         "([ID_Cliente]" +
                         ",[Numero_Orden]" +
@@ -410,8 +412,10 @@ namespace SAXServices.DAL
                         ",1" +
                         ")";
 
+                                        
                     using (var sqlCommand = new SqlCommand(sSql, oConexion))
                     {
+                        sqlCommand.Transaction = oTran;
                         sqlCommand.ExecuteNonQuery();
                     }
 
@@ -420,6 +424,7 @@ namespace SAXServices.DAL
 
                     using (var sqlCommand = new SqlCommand(sSql, oConexion))
                     {
+                        sqlCommand.Transaction = oTran;
                         sqlCommand.ExecuteNonQuery();
                     }
 
@@ -477,16 +482,18 @@ namespace SAXServices.DAL
 
                             using (var sqlCommand = new SqlCommand(sSql, oConexion))
                             {
+                                sqlCommand.Transaction = oTran;
                                 sqlCommand.ExecuteNonQuery();
                             }
                         }
                         catch (Exception ex)
                         {
-                            mensaje = "Error al guardar producto en la orden. Producto: " + order.Detail[i - 1].Product_Name;
+                            RollBackDBTransaction();
+                            mensaje = "Error al guardar producto en la orden. Producto: " + order.Detail[i - 1].Product_Name + ". " + Environment.NewLine +  ex.Message;                            
                             return false;
                         }
                     }
-
+                    CommitDBTransaction();
                     CloseDBConnection();
                     mensaje = sNumero_Orden;
                 }
@@ -494,6 +501,7 @@ namespace SAXServices.DAL
             }
             catch (Exception ex)
             {
+                RollBackDBTransaction();
                 mensaje = "Error al guardar la orden. " +  ex.Message;                
                 return false;
             }
