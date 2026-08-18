@@ -57,7 +57,8 @@ namespace SAXServices.DAL
                      ContCategoria +
 
                     ",t.[Orden] as Orden" +
-                    ",OPedidos.cantidadPedidos " +
+                    ",OPedidos.cantidadPrefacturada " +
+                    ",isnull(OPedidosPendientes.cantidad,0) as cantidadPedidosPendientes " +
                     " FROM [dbo].[Productos_Stock] ps" +
                     " INNER JOIN [dbo].[Productos] p ON ps.Producto_ID = p.ID" +
                     " INNER JOIN [dbo].[Tamaños] t on t.id = ps.Tamaño" +
@@ -66,8 +67,9 @@ namespace SAXServices.DAL
                     " INNER JOIN [dbo].[Colores] c ON p.color =  c.ID " +
                     /*DESA-2261 */
                     " LEFT JOIN [dbo].[Producto_Nivel_1] N1 ON N1.N1_ID = P.N1_ID" +
-                    " LEFT JOIN [dbo].[Producto_Nivel_2] N2 ON N2.N2_ID = P.N2_ID" +
-                    " LEFT JOIN (SELECT SUM(cantidad) as cantidadPedidos, OC.Producto_ID, Tamaño FROM ORDEN_DE_COMPRA_CLIENTE_DETALLE AS OC WHERE OC.ESTADO=1 GROUP BY OC.Producto_ID, Tamaño) AS OPedidos ON p.ID = OPedidos.Producto_ID AND ps.Tamaño = OPedidos.Tamaño" +  /*DESA-2385 Pilar*/                    
+                    " LEFT JOIN [dbo].[Producto_Nivel_2] N2 ON N2.N1_ID = P.N1_ID and N2.N2_ID = P.N2_ID" +
+                    " LEFT JOIN (SELECT SUM(IsNull(cantidad_preparada,0)) as cantidadPrefacturada, OC.Producto_ID, Tamaño FROM ORDEN_DE_COMPRA_CLIENTE_DETALLE AS OC WHERE OC.ESTADO=1 GROUP BY OC.Producto_ID, Tamaño) AS OPedidos ON p.ID = OPedidos.Producto_ID AND ps.Tamaño = OPedidos.Tamaño" +  /*DESA-2385 Pilar*/
+                    " LEFT JOIN (SELECT SUM(IsNull(cantidad,0)) as cantidad, OCWeb.Producto_ID, Tamaño FROM ORDEN_DE_COMPRA_CLIENTE_DETALLE AS OCWeb WHERE OCWeb.ESTADO=2 GROUP BY OCWeb.Producto_ID, Tamaño) AS OPedidosPendientes ON p.ID = OPedidosPendientes.Producto_ID AND ps.Tamaño = OPedidosPendientes.Tamaño" +  /*DESA-2385 Pilar*/
                     " WHERE ps.Activo = 1 AND p.Existe = 1  AND ps.Web = 1 ";
                     //DESA-961 Envío de productos por regla de negocio
                     //" AND LEFT(ps.Producto_ID, 2) IN ('15', '17', '60', '80') "; //JORGE: Según requerimiento DESA-116
@@ -143,7 +145,8 @@ namespace SAXServices.DAL
                             }
                             /*************DESA - 2053 17 / 4 / 2024  PILAR*/
 
-                            stockDisponible = (color == NO_VARIANTES ? (decimal)rsp["Stock_PT"] : 0) - (rsp["cantidadPedidos"]== null ? (decimal)rsp["cantidadPedidos"]:0); /*Desa-2385 Pilar*/
+                            stockDisponible = (color == NO_VARIANTES ? (decimal)rsp["Stock_PT"]  - (rsp["cantidadPrefacturada"] != null ? (decimal)rsp["cantidadPrefacturada"]:0) 
+                                               -(rsp["cantidadPedidosPendientes"] != null ? (decimal)rsp["cantidadPedidosPendientes"] : 0) : 0) ; /*Desa-2385 Pilar*/
                             product = new Product
                             {
                                 Product_Id = product_id,
@@ -162,7 +165,9 @@ namespace SAXServices.DAL
                         }
                         else //si ya existe, lo obtengo
                         {
-                            stockDisponible = (color == NO_VARIANTES ? (decimal)rsp["Stock_PT"] : 0) - (rsp["cantidadPedidos"] == null ? (decimal)rsp["cantidadPedidos"] : 0); /*Desa-2385 Pilar*/
+                            stockDisponible = (color == NO_VARIANTES ? (decimal)rsp["Stock_PT"] - (rsp["cantidadPrefacturada"] != null ? (decimal)rsp["cantidadPrefacturada"] : 0)
+                                               - (rsp["cantidadPedidosPendientes"] != null ? (decimal)rsp["cantidadPedidosPendientes"] : 0) : 0); /*Desa-2385 Pilar*/
+
                             product = result.First(p => p.Product_Id == product_id);
                             product.Stock += (color == NO_VARIANTES ? (decimal)rsp["Stock_PT"] : 0);
                             product.StockDisponible += (color == NO_VARIANTES ? stockDisponible : 0);              /*DESA-2385 Pilar*/
@@ -195,7 +200,9 @@ namespace SAXServices.DAL
                                 currentColor = product.Variations.First(v => v.AttributeValue == color);
                             }
 
-                            stockDisponible =  (rsp["Stock_PT"] != null ? (decimal)rsp["Stock_PT"] : (decimal)0.00) - (rsp["cantidadPedidos"] == null ? (decimal)rsp["cantidadPedidos"] : 0); /*Desa-2385 Pilar*/
+                            stockDisponible = (rsp["Stock_PT"] != null ? (decimal)rsp["Stock_PT"] : (decimal)0.00) - (rsp["cantidadPrefacturada"] != null ? (decimal)rsp["cantidadPrefacturada"] : 0)
+                                                - (rsp["cantidadPedidosPendientes"] != null ? (decimal)rsp["cantidadPedidosPendientes"] : 0); /*Desa-2385 Pilar*/
+                            
                             //Paso 3: Pregunto si el talle existe
                             if (!currentColor.Variations.Exists(v => v.AttributeValue == rsp["Tamaño"].ToString()))                            {
 
@@ -231,6 +238,8 @@ namespace SAXServices.DAL
                             }
                         }
                     }
+
+
 
                     rsp.Close();
                 }

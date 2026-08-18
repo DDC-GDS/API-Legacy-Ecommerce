@@ -365,7 +365,8 @@ namespace SAXServices.DAL
                             break;
                     }
 
-                    strPedidoObservacion += " - TipoEnvio:" + order.TipoEnvio;
+                    strPedidoObservacion += " - Código pedido: " + order.CodigoPedidoEC;
+                    strPedidoObservacion += " - Tipo envío: " + order.TipoEnvio;
 
                     OpenDBTransaction();
 
