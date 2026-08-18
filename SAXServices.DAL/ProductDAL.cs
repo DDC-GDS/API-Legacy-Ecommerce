@@ -25,6 +25,11 @@ namespace SAXServices.DAL
                 //'21/01/2020 ITO:ECM-8 Nombre de categorías en los productos - GRIMAN
                 var categoria = ConfigurationManager.AppSettings["CAT"];
                 var ContCategoria = "";
+                
+                Decimal stockDisponible = 0;
+                DateTime logDia;
+                String diaTiempo;
+
                 if (categoria == "true")
                 {
                     ContCategoria = ",N2.Nivel2_Descripcion as Category";
@@ -44,8 +49,7 @@ namespace SAXServices.DAL
                     ",p.[Descripcion]" +
                     ",t.[Descripcion] as Talle" +
                     ",c.Abreviado as Color" +
-                    ",c.Descripcion as ColorDesc" +
-
+                    ",c.Descripcion as ColorDesc" +                    
                     //'21/01/2020 ITO:ECM-8 Nombre de categorías en los productos - GRIMAN
                     //",CASE WHEN N2.N2_ID = 'CA' THEN N2.Nivel2_Descripcion " +
                     //"ELSE N1.Descripcion END as Category" +
@@ -53,6 +57,7 @@ namespace SAXServices.DAL
                      ContCategoria +
 
                     ",t.[Orden] as Orden" +
+                    ",OPedidos.cantidadPedidos " +
                     " FROM [dbo].[Productos_Stock] ps" +
                     " INNER JOIN [dbo].[Productos] p ON ps.Producto_ID = p.ID" +
                     " INNER JOIN [dbo].[Tamaños] t on t.id = ps.Tamaño" +
@@ -62,11 +67,12 @@ namespace SAXServices.DAL
                     /*DESA-2261 */
                     " LEFT JOIN [dbo].[Producto_Nivel_1] N1 ON N1.N1_ID = P.N1_ID" +
                     " LEFT JOIN [dbo].[Producto_Nivel_2] N2 ON N2.N2_ID = P.N2_ID" +
+                    " LEFT JOIN (SELECT SUM(cantidad) as cantidadPedidos, OC.Producto_ID, Tamaño FROM ORDEN_DE_COMPRA_CLIENTE_DETALLE AS OC WHERE OC.ESTADO=1 GROUP BY OC.Producto_ID, Tamaño) AS OPedidos ON p.ID = OPedidos.Producto_ID AND ps.Tamaño = OPedidos.Tamaño" +  /*DESA-2385 Pilar*/                    
                     " WHERE ps.Activo = 1 AND p.Existe = 1  AND ps.Web = 1 ";
                     //DESA-961 Envío de productos por regla de negocio
                     //" AND LEFT(ps.Producto_ID, 2) IN ('15', '17', '60', '80') "; //JORGE: Según requerimiento DESA-116
 
-                        if (!String.IsNullOrEmpty(id)) sSql += String.Format(CultureInfo.CurrentCulture, "AND Producto_ID LIKE '{0}%'", id);
+                        if (!String.IsNullOrEmpty(id)) sSql += String.Format(CultureInfo.CurrentCulture, "AND Ps.Producto_ID LIKE '{0}%'", id);
 
                         using (var sqlCommand = new SqlCommand(sSql, oConexion))
                         {
@@ -117,9 +123,7 @@ namespace SAXServices.DAL
                                 //Paso 1: Pregunto si el producto ya existe.
                                 if (!result.Exists(p => p.Product_Id == product_id))
                                 {
-                                    /*DESA-2053 17/4/2024  PILAR*/
-                            DateTime  logDia;
-                            String    diaTiempo;
+                            /*DESA-2053 17/4/2024  PILAR*/                            
                             try {
                                 if (rsp["Last_Update"]==DBNull.Value)
                                 {
@@ -139,6 +143,7 @@ namespace SAXServices.DAL
                             }
                             /*************DESA - 2053 17 / 4 / 2024  PILAR*/
 
+                            stockDisponible = (color == NO_VARIANTES ? (decimal)rsp["Stock_PT"] : 0) - (rsp["cantidadPedidos"]== null ? (decimal)rsp["cantidadPedidos"]:0); /*Desa-2385 Pilar*/
                             product = new Product
                             {
                                 Product_Id = product_id,
@@ -147,7 +152,8 @@ namespace SAXServices.DAL
                                 Description = description,
                                 Category = rsp["Category"].ToString(),
                                 Manage_Stock = color == NO_VARIANTES,
-                                Stock = (color == NO_VARIANTES ? (decimal)rsp["Stock_PT"] : 0),
+                                Stock = (color == NO_VARIANTES ? (decimal)rsp["Stock_PT"] : 0),                                
+                                StockDisponible = stockDisponible,                                               /*Desa-2385 Pilar*/
                                 Type = (color == NO_VARIANTES ? ProductType.simple : ProductType.variable),
                                 Variations = new List<ProductVariation>()
                             };
@@ -156,8 +162,10 @@ namespace SAXServices.DAL
                         }
                         else //si ya existe, lo obtengo
                         {
+                            stockDisponible = (color == NO_VARIANTES ? (decimal)rsp["Stock_PT"] : 0) - (rsp["cantidadPedidos"] == null ? (decimal)rsp["cantidadPedidos"] : 0); /*Desa-2385 Pilar*/
                             product = result.First(p => p.Product_Id == product_id);
-                            product.Stock += (color == NO_VARIANTES ? (decimal)rsp["Stock_PT"] : 0);                            
+                            product.Stock += (color == NO_VARIANTES ? (decimal)rsp["Stock_PT"] : 0);
+                            product.StockDisponible += (color == NO_VARIANTES ? stockDisponible : 0);              /*DESA-2385 Pilar*/
                         }
 
                         //Paso 2: Pregunto si el producto tiene colores
@@ -166,6 +174,7 @@ namespace SAXServices.DAL
                             //Paso 2: Pregunto si el color existe para ese producto
                             if (!product.Variations.Exists(v => v.AttributeValue == color))
                             {
+
                                 currentColor = new ProductVariation
                                 {
                                     ParentProduct_Id = product_id,
@@ -174,7 +183,8 @@ namespace SAXServices.DAL
                                     AttributeValue = color,
                                     Description = rsp["ColorDesc"].ToString(),
                                     Manage_Stock = false,
-                                    Stock = 0,
+                                    Stock = 0,   
+                                    StockDisponible=0,
                                     Variations = new List<ProductVariation>()
                                 };
 
@@ -185,9 +195,10 @@ namespace SAXServices.DAL
                                 currentColor = product.Variations.First(v => v.AttributeValue == color);
                             }
 
+                            stockDisponible =  (rsp["Stock_PT"] != null ? (decimal)rsp["Stock_PT"] : (decimal)0.00) - (rsp["cantidadPedidos"] == null ? (decimal)rsp["cantidadPedidos"] : 0); /*Desa-2385 Pilar*/
                             //Paso 3: Pregunto si el talle existe
-                            if (!currentColor.Variations.Exists(v => v.AttributeValue == rsp["Tamaño"].ToString()))
-                            {
+                            if (!currentColor.Variations.Exists(v => v.AttributeValue == rsp["Tamaño"].ToString()))                            {
+
                                 var currentTalle = new ProductVariation
                                 {
                                     ParentProduct_Id = product_id + color,
@@ -197,11 +208,12 @@ namespace SAXServices.DAL
                                     Description = rsp["Talle"].ToString(),
                                     Order = (int)rsp["Orden"],
                                     Manage_Stock = true,
-                                    
+
                                     /*DESA-2200 Pilar*/
                                     //Stock = rsp["Stock_PT"] == null ? (decimal)rsp["Stock_PT"] : (decimal)0.00,
                                     Stock = rsp["Stock_PT"] != null ? (decimal)rsp["Stock_PT"] : (decimal)0.00,
                                     /*-----------------------------DESA-2200 Pilar*/
+                                    StockDisponible = stockDisponible,                                                  /*DESA-2385 Pilar*/
 
                                     Variations = new List<ProductVariation>()
                                 };
@@ -215,6 +227,7 @@ namespace SAXServices.DAL
                                 //currentTalle.Stock += rsp["Stock_PT"] == null ? (decimal)rsp["Stock_PT"] : (decimal)0.00;
                                 currentTalle.Stock += rsp["Stock_PT"] != null ? (decimal)rsp["Stock_PT"] : (decimal)0.00;
                                 /*--------------------------------DESA-2200 Pilar*/
+                                currentTalle.StockDisponible += stockDisponible;                                        /*DESA-2385 Pilar*/
                             }
                         }
                     }

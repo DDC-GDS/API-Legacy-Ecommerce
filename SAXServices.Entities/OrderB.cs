@@ -17,6 +17,8 @@ namespace SAXServices.Contracts
 
         public string NroOrdenCompra { get; set; }
 
+        public string CodigoPedidoEC { get; set; }
+
         public string CanalVentas { get; set; }
 
         public string TipoEnvio { get; set; }

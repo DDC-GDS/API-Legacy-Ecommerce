@@ -24,6 +24,8 @@ namespace SAXServices.Contracts
         public bool Manage_Stock { get; set; }
 
         public decimal Stock { get; set; }
+        
+        public decimal StockDisponible { get; set; }
 
         public string Category { get; set; }
 
@@ -43,6 +45,7 @@ namespace SAXServices.Contracts
         public bool Manage_Stock { get; set; }
 
         public decimal Stock { get; set; }
+        public decimal StockDisponible { get; set; }
 
         public string AttributeName { get; set; }
 

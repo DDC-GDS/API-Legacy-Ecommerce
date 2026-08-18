@@ -229,6 +229,7 @@ namespace SAXServices.DAL
                                 UserAction = element.UserAction,
                                 CanalVentas = element.CanalVentas,
                                 TipoEnvio = element.TipoEnvio,
+                                CodigoPedidoEC = element.CodigoPedidoEC,
                                 Detail = element.Detail.Where(d => d.PriceList_Name.Substring(0, connection.Name.Length).ToString() == connection.Name && d.Category == marca.Key).ToList()
                             };
 
@@ -248,7 +249,8 @@ namespace SAXServices.DAL
                         Seller_Id = element.Seller_Id,
                         UserAction = element.UserAction,
                         CanalVentas = element.CanalVentas ,
-                        TipoEnvio =element.TipoEnvio,  
+                        TipoEnvio =element.TipoEnvio, 
+                        CodigoPedidoEC = element.CodigoPedidoEC, 
                         Detail = element.Detail.Where(d => d.PriceList_Name.Substring(0, connection.Name.Length).ToString() == connection.Name).ToList()
                     };
                     result &= SaveOrder(connection, newOrder,out mensaje);
@@ -405,7 +407,7 @@ namespace SAXServices.DAL
                         "," + (String.IsNullOrEmpty(order.Seller_Id.ToString()) ? 0 : order.Seller_Id) +
                         ",'" + log + "'" +
                         ",'" + (String.IsNullOrEmpty(order.SucName) ? "" : order.SucName) + "'" +
-                        ",'" + order.CanalVentas.Trim() + "_" + order.NroOrdenCompra + "'" +
+                        ",'" + order.CanalVentas.Trim() + "_" + order.NroOrdenCompra + "/codigo pedido:" + order.CodigoPedidoEC.Trim() + "'" +
                        ",2" + //Estado
                         ",1" +
                         ",1" +
