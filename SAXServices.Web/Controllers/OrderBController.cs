@@ -1,4 +1,5 @@
-﻿using SAXServices.BL;
+﻿using Newtonsoft.Json;
+using SAXServices.BL;
 using SAXServices.Contracts;
 using SAXServices.Web.Contracts;
 using System;
@@ -41,9 +42,12 @@ namespace SAXServices.Web.Controllers
         {
             var response = new ResponseDC();
             string message;
-            bool bOk = true; 
+            bool bOk = true;
+            Log logeo = new Log();
             try
-            {                
+            {              
+                logeo.InicioServicio("OrderB.Post: " + JsonConvert.SerializeObject(order));
+                
                 bOk= this._orderBHandler.Save(order, out message);
                 if (bOk)
                 {
@@ -64,6 +68,8 @@ namespace SAXServices.Web.Controllers
                 response.Message = ex.Message;
                 response.Result = "ERROR";  
             }
+
+            logeo.FinServicio("OrderB.Post: " + response.Result + " / " + response.Message   );
 
             return Json(response);
         }

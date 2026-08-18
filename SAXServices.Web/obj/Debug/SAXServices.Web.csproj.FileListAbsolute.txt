@@ -149,7 +149,7 @@ C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Web\bin\System.Web.Http.
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Web\bin\SAXServices.DAL.pdb
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Web\obj\Debug\SAXServices.Web.csproj.AssemblyReference.cache
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Web\obj\Debug\SAXServices.Web.csproj.CoreCompileInputs.cache
-C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Web\obj\Debug\SAXServices.Web.csproj.CopyComplete
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Web\obj\Debug\SAXServices.Web.dll
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Web\obj\Debug\SAXServices.Web.pdb
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Web\bin\SAXServices.Web.dll.config
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Web\obj\Debug\SAXServi.C1CC59A1.Up2Date

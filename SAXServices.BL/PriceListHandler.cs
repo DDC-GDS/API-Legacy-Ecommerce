@@ -5,36 +5,39 @@ using SAXServices.DAL;
 
 namespace SAXServices.BL
 {
-    public class PriceListHandler : IHandlerBase<PriceList>
+    public class PriceListHandler : IHandlerBasePriceList<PriceList>
     {
-        ICRUDDAL<PriceList> _priceListDAL;
+        ICRUDDALPriceList<PriceList> _priceListDAL;
 
         public PriceListHandler():this(new PriceListDAL()){ }
 
-        public PriceListHandler(ICRUDDAL<PriceList> dal)
+        public PriceListHandler(ICRUDDALPriceList<PriceList> dal)
         {
             this._priceListDAL = dal;
         }
 
-        public IEnumerable<PriceList> GetAll()
-        {
-            return this._priceListDAL.Get();
+        public Boolean  GetAll(out String mensaje, out IEnumerable<PriceList> listas)
+        {            
+            return this._priceListDAL.Get(out mensaje,out listas);
         }
 
-        public IEnumerable<PriceList> GetByDate(DateTime fecha)
+        public Boolean  GetByDate(DateTime fecha,out String mensaje, out IEnumerable<PriceList> listas)
         {
-            return this._priceListDAL.GetByDate(fecha);
+            return this._priceListDAL.GetByDate(fecha,out mensaje,out listas);
+        }
+                
+        public Boolean  GetByName(string name,out string mensaje,out PriceList listaPrecio)
+        {                        
+            var result = this._priceListDAL.GetByName(name,out mensaje,out listaPrecio);
+            return result;
         }
 
-        public PriceList GetByID(int Id)
+
+        //NO implementados
+
+        public Boolean  GetByID(int Id)
         {
             throw new NotImplementedException();
-        }
-
-        public PriceList GetByName(string name)
-        {
-            var result = this._priceListDAL.GetByName(name);
-            return result;
         }
 
         public bool Save(PriceList order, out string message)
@@ -54,6 +57,26 @@ namespace SAXServices.BL
             var priceList = new PriceList { Name = "PriceList" + i, Items = priceItems, Modificado = false };
 
             return priceList;
+        }
+
+        PriceList IHandlerBase<PriceList>.GetByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        PriceList IHandlerBase<PriceList>.GetByID(int Id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<PriceList> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<PriceList> GetByDate(DateTime fecha)
+        {
+            throw new NotImplementedException();
         }
     }
 }

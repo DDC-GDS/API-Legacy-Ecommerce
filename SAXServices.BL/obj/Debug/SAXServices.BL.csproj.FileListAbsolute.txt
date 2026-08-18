@@ -26,4 +26,4 @@ C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\bin\Debug\SAXServices
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\bin\Debug\SAXServices.DAL.dll
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\bin\Debug\SAXServices.DAL.pdb
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\bin\Debug\SAXServices.Contracts.pdb
-C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\obj\Debug\SAXServices.BL.csproj.CopyComplete
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.BL\obj\Debug\SAXServi.1B887A81.Up2Date

@@ -10,31 +10,35 @@ using System.Threading.Tasks;
 
 namespace SAXServices.DAL
 {
-    public class SellerDAL : CRUDDALBase, ICRUDDAL<Seller>
+    public class SellerDAL : CRUDDALBase, ICRUDDALSeller<Seller>
     {
-        public bool Delete(Seller element)
+        
+        public Boolean Get(out String mensaje, out List<Seller> vendedores)
         {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Seller> Get()
-        {
-            var result = new List<Seller>();
-
+            mensaje = "";
+            vendedores = new List<Seller>();
             var connections = ConfigurationManager.ConnectionStrings;
-
+                      
             foreach (ConnectionStringSettings connection in connections)
             {
-                GetSellerData(connection, 0, ref result);
+                GetSellerData(connection, 0, ref vendedores,out mensaje);
             }
-
-            return result;
+            if (mensaje.Equals(""))
+            {
+                mensaje = "Cantidad de vendedores: " + vendedores.Count.ToString();
+                return true;
+            }
+                
+            else
+                return false;           
         }
 
-        private void GetSellerData(ConnectionStringSettings connection, int id, ref List<Seller> result)
+        private void GetSellerData(ConnectionStringSettings connection, int id, ref List<Seller> result, out String mensaje)
         {
-            if (OpenDBConnection(connection.ConnectionString))
-            {
+            mensaje = "";
+            try { 
+               if (OpenDBConnection(connection.ConnectionString))
+                {
                 ///Paso 1: Busco los vendedores
                 var sSql =
                     "SELECT e.[id], e.[Apellido], e.[Nombre] " +
@@ -69,35 +73,66 @@ namespace SAXServices.DAL
                     rsp.Close();
                 }
 
-                CloseDBConnection();
+                CloseDBConnection();                            
+               }
+
+            }
+            catch (Exception ex)
+            {
+                mensaje = "Error al buscar vendedores. " + ex.Message;
+                
             }
         }
 
-        public IEnumerable<Seller> GetByDate(DateTime fecha)
-        {
-            throw new NotImplementedException();
-        }
+       
 
-        public Seller GetById(int id)
+        public Boolean  GetById(int id,out String mensaje, out Seller vendedor)
         {
             var result = new List<Seller>();
-
+            mensaje = "";
+            vendedor = null;
             var connections = ConfigurationManager.ConnectionStrings;
 
             foreach (ConnectionStringSettings connection in connections)
             {
-                GetSellerData(connection, id, ref result);
+                GetSellerData(connection, id, ref result, out mensaje);
             }
-
-            return result.FirstOrDefault();
+            if (mensaje.Equals(""))
+            {
+                vendedor = result.FirstOrDefault();
+                return true;
+            }                
+            else
+                return false;
         }
 
+        /*No implementados*/
         public Seller GetByName(string name)
         {
             throw new NotImplementedException();
         }
 
         public bool Save(Seller element, out String mensaje)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Delete(Seller element)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Seller> GetByDate(DateTime fecha)
+        {
+            throw new NotImplementedException();
+        }
+                
+        IEnumerable<Seller> ICRUDDAL<Seller>.Get()
+        {
+            throw new NotImplementedException();
+        }
+
+        Seller ICRUDDAL<Seller>.GetById(int id)
         {
             throw new NotImplementedException();
         }

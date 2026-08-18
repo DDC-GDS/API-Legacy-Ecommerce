@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Contracts\Log.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\OrderBController.cs" />
     <Compile Include="Controllers\OrderController.cs" />

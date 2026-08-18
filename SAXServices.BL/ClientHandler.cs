@@ -18,16 +18,24 @@ namespace SAXServices.BL
             this._clientDAL = dal;
         }
 
-        public Client GetByID(int id)
+        public Boolean GetByID(int id, out String mensaje, out Client cliente)
         {
-            return this._clientDAL.GetById(id);
+            return this._clientDAL.GetById(id, out mensaje , out cliente);
         }
 
-        public IEnumerable<Client> GetAll()
+        public Boolean GetAll(out String mensaje , out List<Client> clientes)
         {
-            return this._clientDAL.Get();
+            return this._clientDAL.Get(out mensaje, out clientes);
         }
 
+        public Boolean GetByCuit(string cuit, out String mensaje, out Client cliente)
+        {
+            return this._clientDAL.GetByCuit(cuit, out mensaje, out cliente);
+        }
+
+
+
+        /*NO implementados*/
         public Client GetByName(string name)
         {
             throw new NotImplementedException();
@@ -43,9 +51,14 @@ namespace SAXServices.BL
             throw new NotImplementedException();
         }
 
-        public Client GetByCuit(string  cuit)
+        public Client GetByID(int Id)
         {
-            return this._clientDAL.GetByCuit(cuit);
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Client> GetAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }

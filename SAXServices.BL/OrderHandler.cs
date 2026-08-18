@@ -15,7 +15,7 @@ namespace SAXServices.BL
         ICRUDDALClient<Client> _clientDAL;
         ICRUDDAL<Seller> _sellerDAL;
         ICRUDDAL<Product> _productDAL;
-        ICRUDDAL<PriceList> _priceListtDAL;
+        ICRUDDALPriceList<PriceList> _priceListtDAL;
 
         public OrderHandler():this(
             new OrderDAL(), 
@@ -29,7 +29,7 @@ namespace SAXServices.BL
             ICRUDDALClient<Client> clientDAL, 
             ICRUDDAL<Seller> sellerDAL, 
             ICRUDDAL<Product> productDAL,
-            ICRUDDAL<PriceList> priceListDAL)
+            ICRUDDALPriceList <PriceList> priceListDAL)
         {
             this._orderDAL = orderDAL;
             this._clientDAL = clientDAL;

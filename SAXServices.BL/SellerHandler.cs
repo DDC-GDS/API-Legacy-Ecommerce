@@ -8,30 +8,34 @@ using System.Threading.Tasks;
 
 namespace SAXServices.BL
 {
-    public class SellerHandler : IHandlerBase<Seller>
+    public class SellerHandler : IHandlerBaseSeller<Seller>
     {
-        ICRUDDAL<Seller> _sellerDAL;
+        ICRUDDALSeller<Seller> _sellerDAL;
 
         public SellerHandler():this(new SellerDAL()){ }
 
-        public SellerHandler(ICRUDDAL<Seller> dal)
+        public SellerHandler(ICRUDDALSeller<Seller> dal)
         {
             this._sellerDAL = dal;
         }
 
-        public IEnumerable<Seller> GetAll()
+        public Boolean GetAll(out String mensaje, out List<Seller> vendedores)
         {
-            return this._sellerDAL.Get();
+            return this._sellerDAL.Get(out mensaje, out vendedores);
         }
 
+       
+        public Boolean GetById(int Id,out String mensaje, out Seller vendedor)
+        {
+            return this._sellerDAL.GetById(Id,out mensaje, out vendedor);
+        }
+
+        
+        
+        /*No implementados*/
         public IEnumerable<Seller> GetByDate(DateTime fecha)
         {
             throw new NotImplementedException();
-        }
-
-        public Seller GetByID(int Id)
-        {
-            return this._sellerDAL.GetById(Id);
         }
 
         public Seller GetByName(string name)
@@ -40,6 +44,16 @@ namespace SAXServices.BL
         }
 
         public bool Save(Seller order, out string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Seller GetByID(int Id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Seller> GetAll()
         {
             throw new NotImplementedException();
         }

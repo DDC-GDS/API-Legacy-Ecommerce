@@ -8,19 +8,17 @@ using System.Linq;
 
 namespace SAXServices.DAL
 {
-    public class ProductDAL : CRUDDALBase, ICRUDDAL<Product>
+    public class ProductDAL : CRUDDALBase, ICRUDDALProduct<Product>
     {
         private const string NO_VARIANTES = ".";
-
-        public bool Delete(Product element)
+                
+        private List<Product> GetProducts(ConnectionStringSettings connection, string id, out String  mensaje)
         {
-            throw new NotImplementedException();
-        }
-
-        private void GetProducts(ConnectionStringSettings connection, string id, ref List<Product> result)
-        {
-            if (OpenDBConnection(connection.ConnectionString))
+            try
             {
+              List<Product> result = new List<Product>();
+              if (OpenDBConnection(connection.ConnectionString))
+              {
                 var productVariations = new Dictionary<string, List<ProductVariation>>();
                 //'21/01/2020 ITO:ECM-8 Nombre de categorías en los productos - GRIMAN
                 var categoria = ConfigurationManager.AppSettings["CAT"];
@@ -239,28 +237,65 @@ namespace SAXServices.DAL
                         }
                     }
 
-
-
                     rsp.Close();
                 }
 
                 CloseDBConnection();
+                }
+                mensaje = "";
+                return result; 
             }
+            catch (Exception ex)
+            {
+                mensaje = "Error al buscar productos. " + ex.Message;
+                return null;
+            }            
         }
 
 
-        public IEnumerable<Product> Get()
+        public Boolean  Get(out String mensaje, out List<Product> productos)
         {
-            var result = new List<Product>();
-
+            mensaje = "";
+            productos = new List<Product>();            
             var connections = ConfigurationManager.ConnectionStrings;
 
             foreach (ConnectionStringSettings connection in connections)
             {
-                GetProducts(connection, String.Empty, ref result);
+                productos = GetProducts(connection, String.Empty, out mensaje);
             }
+            if (mensaje.Equals(""))
+            {
+                mensaje = "Cantidad de productos: " + productos.Count.ToString();
+                return true;
+            }
+                
+            else
+                return false;
+        }
+              
 
-            return result;
+        public Boolean  GetByName(string name, out String mensaje, out Product producto)
+        {
+            var productos = new List<Product>();
+            var connections = ConfigurationManager.ConnectionStrings;
+            mensaje = "";
+            producto = new Product();            
+
+            foreach (ConnectionStringSettings connection in connections)
+            {
+                productos  = GetProducts(connection, name, out mensaje);
+            }
+            if (mensaje.Equals(""))
+            {
+                if (productos.Count >0)
+                {
+                    producto = productos.FirstOrDefault();
+                    mensaje = "Cantidad de variantes: " + producto.Variations.Count.ToString();
+                }
+                return true;
+            }                
+            else
+                return false;            
         }
 
         public IEnumerable<Product> GetByDate(DateTime fecha)
@@ -273,23 +308,24 @@ namespace SAXServices.DAL
             throw new NotImplementedException();
         }
 
-        public Product GetByName(string name)
-        {
-            var connections = ConfigurationManager.ConnectionStrings;
-
-            var result = new List<Product>();
-
-            foreach (ConnectionStringSettings connection in connections)
-            {
-                GetProducts(connection, name, ref result);
-            }
-
-            return result.FirstOrDefault();
-        }
-
         public bool Save(Product element,out String mensaje)
         {
             throw new NotImplementedException();
+        }               
+
+        IEnumerable<Product> ICRUDDAL<Product>.Get()
+        {
+            throw new NotImplementedException();
         }
+
+        Product ICRUDDAL<Product>.GetByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+        public bool Delete(Product element)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

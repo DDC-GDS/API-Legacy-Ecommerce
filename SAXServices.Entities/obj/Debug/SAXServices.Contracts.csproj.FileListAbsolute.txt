@@ -13,3 +13,4 @@ C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Entities\bin\Debug\SAXSe
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.csproj.CoreCompileInputs.cache
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.dll
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.pdb
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.Entities\obj\Debug\SAXServices.Contracts.csproj.AssemblyReference.cache

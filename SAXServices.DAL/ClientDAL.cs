@@ -17,30 +17,37 @@ namespace SAXServices.DAL
             MO,         //(monotributo)
             EX          //(exento )
         }
+              
 
-        public bool Delete(Client element)
+        public Boolean  Get(out String mensaje, out List<Client> clientes)
         {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Client> Get()
-        {
+            mensaje = "";
+            clientes = new List<Client>();
             var result = new List<Client>();
 
             var connections = ConfigurationManager.ConnectionStrings;
 
             foreach (ConnectionStringSettings connection in connections)
             {
-                GetClientData(connection, 0, ref result);
+                GetClientData(connection, 0, ref result, out mensaje);
             }
-
-            return result;
+            if (mensaje.Equals(""))
+            {
+                mensaje = "Cantidad de clientes: " + result.Count.ToString(); 
+                clientes = result; 
+                return true;
+            }
+                
+            else
+                return false;            
         }
 
-        private void GetClientData(ConnectionStringSettings connection, int id, ref List<Client> result)
+        private void GetClientData(ConnectionStringSettings connection, int id, ref List<Client> result, out String mensaje)
         {
-            if (OpenDBConnection(connection.ConnectionString))
-            {
+            mensaje = "";
+            try { 
+              if (OpenDBConnection(connection.ConnectionString))
+                {
                 var sucItems = new Dictionary<int, List<ClientSuc>>();
 
                 //Paso 1: Busco todos los productos/precios
@@ -159,37 +166,39 @@ namespace SAXServices.DAL
 
                 CloseDBConnection();
             }
+            }
+            catch (Exception ex)
+            {
+               mensaje = "Error al buscar clientes. " + ex.Message;                
+            }
         }
 
-        public IEnumerable<Client> GetByDate(DateTime fecha)
+        
+        public Boolean  GetById(int id,out String mensaje, out Client cliente)
         {
-            throw new NotImplementedException();
-        }
-
-        public Client GetByName(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-        public Client GetById(int id)
-        {
+            mensaje = "";
+            cliente = null;
             var result = new List<Client>();
-
             var connections = ConfigurationManager.ConnectionStrings;
 
             foreach (ConnectionStringSettings connection in connections)
             {
-                GetClientData(connection, id, ref result);
+                GetClientData(connection, id, ref result, out mensaje);
             }
-
-            return result.FirstOrDefault();
+            if (mensaje.Equals(""))
+            {
+                cliente  = result.FirstOrDefault();
+                return true;
+            }
+            else
+                return false;                       
         }
 
-        public Client GetByCuit(string cuit)
+        public Boolean GetByCuit(string cuit, out String  mensaje, out Client cliente)
         {
             Client result = null;
+            mensaje = "";
+            cliente = null;
             var lista = new List<Client>();
             var connections = ConfigurationManager.ConnectionStrings;
             foreach (ConnectionStringSettings connection in connections)
@@ -208,26 +217,27 @@ namespace SAXServices.DAL
                         {
                             result = new Client();
                             rsp.Read();
-                            this.GetClientData(connection, (int)rsp["CLIENTE_ID"], ref lista);
+                            this.GetClientData(connection, (int)rsp["CLIENTE_ID"], ref lista, out mensaje);
                             /*result.Client_ID = (int)rsp["Cliente_Id"];
                             result.CUIT = (string)rsp["CUIT"];
                             result.Name = (string)rsp["Nombre"];*/
-                            result = lista.FirstOrDefault();
+                            //result = lista.FirstOrDefault();
                             
                         }
                         rsp.Close();
                     }
                     CloseDBConnection();
                 }
+            }                       
+            if (mensaje.Equals(""))
+            {
+                cliente = lista.FirstOrDefault(); 
+                return true;
             }
-            return result;
+            else
+                return false;
         }
-
-        public bool Save(Client element)
-        {
-            throw new NotImplementedException();
-        }
-
+                
 
         /**Cliente WEB***/
         public bool Save(ClienteWeb element, out String mensaje, String listaPrecios )
@@ -396,6 +406,42 @@ EF	Exento B	0	NULL	B	8*/
                 return false;
             }
 
+        }
+
+        /*NO implementados*/
+        public IEnumerable<Client> GetByDate(DateTime fecha)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Client GetByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Delete(Client element)
+        {
+            throw new NotImplementedException();
+        }
+        public bool Save(Client element)
+        {
+            throw new NotImplementedException();
+        }
+               
+        
+        IEnumerable<Client> ICRUDDAL<Client>.Get()
+        {
+            throw new NotImplementedException();
+        }
+
+        bool ICRUDDAL<Client>.Save(Client element, out string mensaje)
+        {
+            throw new NotImplementedException();
+        }
+
+        Client ICRUDDAL<Client>.GetById(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

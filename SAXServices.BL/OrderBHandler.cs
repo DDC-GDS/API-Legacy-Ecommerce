@@ -3,6 +3,7 @@ using SAXServices.DAL;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -15,9 +16,9 @@ namespace SAXServices.BL
         ICRUDDAL<OrderB> _orderDAL;
         ICRUDDALClient<Client> _clientDAL;
         ICRUDDALClientWeb <ClienteWeb > _clientWebDAL;
-        ICRUDDAL<Seller> _sellerDAL;
-        ICRUDDAL<Product> _productDAL;
-        ICRUDDAL<PriceList> _priceListtDAL;
+        ICRUDDALSeller<Seller> _sellerDAL;
+        ICRUDDALProduct<Product> _productDAL;
+        ICRUDDALPriceList <PriceList> _priceListDAL;
 
         /*DESA-2235 Pilar*/
         private const string productoDescuento = "##DESC";
@@ -34,16 +35,16 @@ namespace SAXServices.BL
         public OrderBHandler(ICRUDDAL<OrderB> orderDAL, 
                             ICRUDDALClient<Client> clientDAL,
                             ICRUDDALClientWeb<ClienteWeb> clientWebDAL,
-                            ICRUDDAL<Seller> sellerDAL, 
-                            ICRUDDAL<Product> productDAL,
-                            ICRUDDAL<PriceList> priceListDAL)
+                            ICRUDDALSeller<Seller> sellerDAL, 
+                            ICRUDDALProduct<Product> productDAL,
+                            ICRUDDALPriceList<PriceList> priceListDAL)
         {
             this._orderDAL = orderDAL;
             this._clientDAL = clientDAL;
             this._clientWebDAL = clientWebDAL;
             this._sellerDAL = sellerDAL;
             this._productDAL = productDAL;
-            this._priceListtDAL = priceListDAL;
+            this._priceListDAL = priceListDAL;
         }
 
         public IEnumerable<OrderB> GetAll()
@@ -103,7 +104,7 @@ namespace SAXServices.BL
         private bool ValidateOrder(OrderB order, out string mensaje)
         {
             try {
-                IEnumerable<PriceList> prices = null;
+                List<PriceList> prices = new List<PriceList> ();
                 
                 ///Validación 0: Orden mal formada. Si esta no se cumple, no se sigue verificando nada.
                 if (order == null || order.Detail == null || order.Detail.Count <= 0)
@@ -114,64 +115,116 @@ namespace SAXServices.BL
 
                 var sb = new StringBuilder();
                 var resultado = true;
-                                
+
+                /* 'DESA-2366 Pilar'*/
+                OrderBDetail descuentosAgrupados = new OrderBDetail();                         
+                Boolean descuento = false;                                                          
+                OrderB nuevaOrden;
+                /* 'DESA-2366 Pilar'*/
+
                 order.Fecha_Vto = order.Fecha_Emision;
-                
-                ///Validación 1: Cliente inexistente            
-                var client = this._clientDAL.GetByCuit(order.cliente.documentoNro); 
-                /*DESA-2053 el cliente no existe*/
-                if (client == null){                    
-                    resultado = this._clientWebDAL.Save(order.cliente, out mensaje, order.Detail[0].PriceList_Name);
-                    if (resultado)
+
+                ///Validación 1: Cliente inexistente    
+                Client cliente;
+                if (this._clientDAL.GetByCuit(order.cliente.documentoNro, out mensaje, out cliente))
+                {
+                    if (cliente == null)
                     {
-                        /*Se pudo crear el nuevo cliente*/
-                        order.Client_ID = Int32.Parse(mensaje);
-                        sb.AppendLine("CUIT de cliente inexistente. Se creo el cliente: " + order.cliente.apellido + " " + order.cliente.nombre + " - CUIT:" + order.cliente.documentoNro);
+                        /*DESA-2053 el cliente no existe*/
+                        //if (client == null){                    
+                        resultado = this._clientWebDAL.Save(order.cliente, out mensaje, order.Detail[0].PriceList_Name);
+                        if (resultado)
+                        {
+                            /*Se pudo crear el nuevo cliente*/
+                            order.Client_ID = Int32.Parse(mensaje);
+                            sb.AppendLine("CUIT de cliente inexistente. Se creo el cliente: " + order.cliente.apellido + " " + order.cliente.nombre + " - CUIT:" + order.cliente.documentoNro);
+                        }
+                        /*DESA-2235 PILAR*/
+                        else
+                        {
+                            /*Dió error la creación --> tomo cliente genérico web*/
+                            if (this._clientDAL.GetById(Int32.Parse(ConfigurationManager.AppSettings["clienteWeb"]), out mensaje, out cliente))
+                            {
+                                if(cliente != null)
+                                {
+                                    order.Client_ID = cliente.Client_ID;
+                                    resultado = (cliente != null);
+                                    mensaje = "Datos del cliente inválidos. Se tomó el cliente web: " + cliente.Name;
+                                }
+                                else
+                                {
+                                    mensaje += "Error al recuperar el cliente genérico Web";
+                                    return false;
+                                }
+                                
+                            }
+                            else
+                            {
+                                mensaje += "Error al recuperar el cliente genérico Web";                                
+                                return false;
+                            }
+                        }
+                        /*-------------------------------------------------------DESA-2235 PILAR*/
+                        sb.AppendLine(mensaje);
                     }
-                    /*DESA-2235 PILAR*/
                     else
-                    {
-                        /*Dió error la creación --> tomo cliente genérico web*/
-                        client = this._clientDAL.GetById(Int32.Parse(ConfigurationManager.AppSettings["clienteWeb"]));
-                        order.Client_ID = client.Client_ID;
-                        resultado = (client != null);
-                        mensaje = "Datos del cliente inválidos. Se tomó el cliente web: " + client.Name;
-                    }
-                    /*-------------------------------------------------------DESA-2235 PILAR*/
-                    sb.AppendLine(mensaje);
+                        order.Client_ID = cliente.Client_ID;
                 }
                 else
-                    order.Client_ID = client.Client_ID;
+                {
+                    mensaje += "Error al recuperar el cliente";                    
+                    return false;
+                }
+
 
                 if (resultado)
                 {
-                    var clients = this._clientDAL.Get();
-                    ///Validación 2: Suc cliente inválida                
-                    client = clients.First(c => c.Client_ID == order.Client_ID);
-
-                    if (client != null && !String.IsNullOrEmpty(order.SucName) && client.Sucs.Where(s => s.SucName == order.SucName).Count() <= 0)
+                    List<Client> clientes = new List<Client>();
+                    if (this._clientDAL.Get(out mensaje, out clientes))
                     {
-                        sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "La Sucursal {0} de Cliente no es válida para el cliente {1}. Verifique.", order.SucName, order.Client_ID));
-                        resultado = false;
-                    }
+                    
+                        ///Validación 2: Suc cliente inválida                
+                        cliente = clientes.First(c => c.Client_ID == order.Client_ID);
 
-                    ///Validación 2.1: Lista de Precios Existente
-                    List<string> priceListNames = null;
-                    if (client != null && !String.IsNullOrEmpty(order.SucName) && client.Sucs.Where(s => s.SucName == order.SucName).Count() > 0)
-                    {
-                        var suc = client.Sucs.Find(s => s.SucName == order.SucName);
-                        priceListNames = suc.PriceList;
+                        if (cliente != null && !String.IsNullOrEmpty(order.SucName) && cliente.Sucs.Where(s => s.SucName == order.SucName).Count() <= 0)
+                        {
+                            sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "La Sucursal {0} de Cliente no es válida para el cliente {1}. Verifique.", order.SucName, order.Client_ID));
+                            resultado = false;
+                        }
+
+                        ///Validación 2.1: Lista de Precios Existente
+                        List<string> priceListNames = null;
+                        if (cliente != null && !String.IsNullOrEmpty(order.SucName) && cliente.Sucs.Where(s => s.SucName == order.SucName).Count() > 0)
+                        {
+                            var suc = cliente.Sucs.Find(s => s.SucName == order.SucName);
+                            priceListNames = suc.PriceList;
+                        }
+                        else
+                        {
+                            if (cliente != null)
+                            {
+                                priceListNames = cliente.PriceList;
+                            }
+                        }
+
+                        PriceList lista;
+                        Boolean bOk = true;
+                        for (int i = 0; i < priceListNames.Count; i++)
+                        {
+                            bOk = this._priceListDAL.GetByName(priceListNames.ElementAt(i), out mensaje, out lista);
+                            if (bOk && lista.Items != null)
+                            {
+                                prices.Add(lista);
+                            }
+                        }
+                        //prices =   listas.Where(p => priceListNames.Contains(p.Name));
                     }
                     else
                     {
-                        if (client != null)
-                        {
-                            priceListNames = client.PriceList;
-                        }
+                        mensaje += "Error al recuperar las listas de precios del cliente";
+                        return false;
                     }
 
-
-                    prices = this._priceListtDAL.Get().Where(p => priceListNames.Contains(p.Name));
                 }
 
                 if (resultado) {
@@ -186,7 +239,12 @@ namespace SAXServices.BL
                     }
                 }
                 //DESA-2235 PILAR '
-                var products = this._productDAL.Get();
+                List<Product> productos;
+                if(!this._productDAL.Get(out mensaje,out productos))
+                {
+                    mensaje += "Error al recuperar productos";
+                    return false;
+                }
                 //--------------------------------------DESA-2235 PILAR '
 
                 ///Validaciones del cuerpo de la orden
@@ -203,8 +261,10 @@ namespace SAXServices.BL
                     /*DESA-2235 Pilar si es descuento o costo envío le asigno el idProducto correspondiente*/
                     if (detail.Product_Id.ToUpper().Contains(productoDescuento))
                     {
+                        descuento = true; 
                         detail.Product_Id = ConfigurationManager.AppSettings["descuento"];
-                        detail.ProductVariation_Id = ConfigurationManager.AppSettings["descuento"];
+                        detail.ProductVariation_Id = ConfigurationManager.AppSettings["descuento"];                                                
+                        
                     }
                     else if (detail.Product_Id.ToUpper().Contains(productoCostoEnvio))
                     {
@@ -218,7 +278,7 @@ namespace SAXServices.BL
                     //DESA-2235 PILAR '
                     //                    var products = this._productDAL.Get();
                     //------------------------------------DESA-2235 PILAR '                    
-                    if (products.Where(p => p.Product_Id.ToUpper().Equals(detail.Product_Id.ToUpper())).Count() <= 0)
+                    if (productos.Where(p => p.Product_Id.ToUpper().Equals(detail.Product_Id.ToUpper())).Count() <= 0)
                     {
                        sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "Id de Producto {0} Inválido o inexistente. Verifique.", detail.Product_Id));
                        resultado = false;
@@ -226,13 +286,13 @@ namespace SAXServices.BL
                     }
 
                     ///Validación 3: Datos del producto
-                    var product = products.First(p => p.Product_Id.ToUpper().Equals(detail.Product_Id.ToUpper()));      
+                    var product = productos.First(p => p.Product_Id.ToUpper().Equals(detail.Product_Id.ToUpper()));      
 
                     detail.Product_Name = product.Name;
                     detail.Product_Description = product.Description;
                         //09/12/2019 ITO : DESA-952 Separar los pedidos por marca
                     detail.Category = product.Category;
-
+                    
                         ///Validación 4: Variante válida.
                         ///Puede ser que la variante sea el producto en si, en ese caso se omite la validación.
                     ProductVariation variation = null;
@@ -278,7 +338,7 @@ namespace SAXServices.BL
                                 priceList = prices.FirstOrDefault(l => l.Items.Exists(p => p.Product_Id.ToUpper().Equals(detail.Product_Id.ToUpper()) && p.ProductVariation_Id.ToUpper().Equals(detail.ProductVariation_Id.ToUpper())));
                                 if (priceList == null)
                                 {
-                                    sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "No existe el producto {0} variante {1} en las listas de precios del cliente {2}. Verifique.", detail.Product_Id, detail.ProductVariation_Id, client.Name));
+                                    sb.AppendLine(String.Format(CultureInfo.CurrentCulture, "No existe el producto {0} variante {1} en las listas de precios del cliente {2}. Verifique.", detail.Product_Id, detail.ProductVariation_Id, cliente.Name));
                                     resultado = false;
                                 }
                                 else
@@ -291,9 +351,33 @@ namespace SAXServices.BL
                                 /*toma el precio que tiene la orden de pedido*/
                             }
                         }
+                       /*'DESA-2366 PILAR'*/
+                        if (descuento)
+                        {
+                            if (descuentosAgrupados.Product_Id==null)
+                                descuentosAgrupados = detail;
+                            else
+                                descuentosAgrupados.Price  += detail.Price;                            
+                        }                                               
                     }
                 }
-                
+
+                if (descuento)
+                {
+                    nuevaOrden = new OrderB();
+                    nuevaOrden.Detail = new List<OrderBDetail>(); 
+                                        
+                    foreach (var detail in order.Detail)
+                    {
+                        if (!detail.Product_Id.Equals(descuentosAgrupados.Product_Id ) )
+                            nuevaOrden. Detail.Add (detail);                            
+                    }
+                    nuevaOrden.Detail.Add(descuentosAgrupados);
+                    order.Detail.Clear();
+                    order.Detail = nuevaOrden.Detail;                    
+                }
+                /* '---------------------------------------------------------------------DESA-2366 PILAR'*/
+
                 mensaje = sb.ToString();
                 return resultado;
             }

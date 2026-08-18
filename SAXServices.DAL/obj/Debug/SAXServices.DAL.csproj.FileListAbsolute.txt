@@ -18,6 +18,6 @@ C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\bin\Debug\SAXService
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\bin\Debug\SAXServices.Contracts.pdb
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.csproj.AssemblyReference.cache
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.csproj.CoreCompileInputs.cache
-C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.csproj.CopyComplete
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.dll
 C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\obj\Debug\SAXServices.DAL.pdb
+C:\Users\Pilar laboro\Vixerant\SAX_Services\SAXServices.DAL\obj\Debug\SAXServi.8FA6F61E.Up2Date

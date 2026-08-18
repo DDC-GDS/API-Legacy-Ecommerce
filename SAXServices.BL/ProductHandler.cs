@@ -7,30 +7,33 @@ using System.Text;
 
 namespace SAXServices.BL
 {
-    public class ProductHandler : IHandlerBase<Product>
+    public class ProductHandler : IHandlerBaseProduct<Product>
     {
-        ICRUDDAL<Product> _productDAL;
+        ICRUDDALProduct<Product> _productDAL;
 
         public ProductHandler():this(new ProductDAL()){ }
 
-        public ProductHandler(ICRUDDAL<Product> dal)
+        public ProductHandler(ICRUDDALProduct<Product> dal)
         {
             this._productDAL = dal;
+        }        
+
+        public Boolean  GetAll(out String mensaje, out List<Product> productos)
+        {
+            return this._productDAL.Get(out mensaje, out productos);
         }
 
+        public Boolean GetByName(string name, out String mensaje, out Product producto)
+        {            
+            return this._productDAL.GetByName(name,out mensaje, out producto) ;
+        }
+
+
+
+        /*NO implementados*/
         public Product GetByID(int id)
         {
             throw new NotImplementedException();
-        }
-
-        public IEnumerable<Product> GetAll()
-        {
-            return this._productDAL.Get();
-        }
-
-        public Product GetByName(string name)
-        {
-            return this._productDAL.GetByName(name);
         }
 
         public IEnumerable<Product> GetByDate(DateTime fecha)
@@ -39,6 +42,17 @@ namespace SAXServices.BL
         }
 
         public bool Save(Product order, out string message)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        Product IHandlerBase<Product>.GetByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Product> GetAll()
         {
             throw new NotImplementedException();
         }
