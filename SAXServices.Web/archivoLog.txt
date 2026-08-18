@@ -9,3 +9,16 @@
 [2025-10-30 11:25:03] INICIO servicio ****: PriceList.Get
 [2025-10-30 11:36:37] INICIO servicio ****: PriceList.Get
 [2025-10-30 11:38:01] INICIO servicio ****: PriceList.Get
+[2025-11-18 09:58:18] INICIO servicio ****: PriceList.Get
+[2025-11-18 09:58:48] FIN    servicio ****: PriceList.Get: OK / 
+[2025-11-18 10:01:34] INICIO servicio ****: PriceList.Get
+[2025-11-18 10:01:45] FIN    servicio ****: PriceList.Get: OK / 
+[2025-11-19 12:31:06] INICIO servicio ****: PriceList.Get
+[2025-11-19 12:31:20] FIN    servicio ****: PriceList.Get: ERROR / Error al buscar listas de precio. No se puede abrir la base de datos 'Almatex_2910' solicitada por el inicio de sesión. Error de inicio de sesión.
+Error de inicio de sesión del usuario 'sa'.
+[2025-11-19 12:32:21] INICIO servicio ****: PriceList.Get
+[2025-11-19 12:32:25] FIN    servicio ****: PriceList.Get: ERROR / Error al buscar listas de precio. La conversión del tipo de datos varchar en datetime produjo un valor fuera de intervalo.
+[2025-11-19 12:33:13] INICIO servicio ****: PriceList.Get
+[2025-11-19 12:33:18] FIN    servicio ****: PriceList.Get: ERROR / Error al buscar listas de precio. La conversión del tipo de datos varchar en datetime produjo un valor fuera de intervalo.
+[2025-11-19 12:33:58] INICIO servicio ****: PriceList.Get
+[2025-11-19 12:34:05] FIN    servicio ****: PriceList.Get: OK / 

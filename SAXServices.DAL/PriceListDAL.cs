@@ -138,7 +138,7 @@ namespace SAXServices.DAL
                          //-------------------------------------------------------------------------------------------DESA-2262 Pilar                    
                          "INNER JOIN Productos_Stock st ON pph.Producto_Id = st.Producto_ID " + //Filtrar por Productos tipo Web
                         //"WHERE st.Web = 1  and Convert(date, pph.FVigencia) <= '{0}' and Convert(date, pph.FHasta) >= '{0}' and st.activo = 1 and p.existe=1 " + whereHNombre, fechaVigencia.ToString("yyyyMMdd", CultureInfo.CurrentCulture));
-                        "WHERE st.Web = 1  and  pph.FVigencia <= '{0}' and pph.FHasta >= '{0}' and st.activo = 1 and p.existe=1 " + whereHNombre, fechaVigencia);
+                        "WHERE st.Web = 1  and  pph.FVigencia <= '{0}' and pph.FHasta >= '{0}' and st.activo = 1 and p.existe=1 " + whereHNombre, fechaVigencia.ToString("yyyyMMdd HH: mm: ss", CultureInfo.CurrentCulture)); 
 
                     using (var sqlCommand = new SqlCommand(sSql, oConexion))
                     {
